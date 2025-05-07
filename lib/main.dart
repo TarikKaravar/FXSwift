@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/screens/loading_screen.dart';
+// Home ekranı için tek bir import kullanın - yol projenize göre doğruysa
+import 'package:flutter_app/screens/home_screen.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(const MyApp());
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
+    return MaterialApp(
+      title: 'Döviz Dönüştürücü',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        fontFamily: 'Roboto',
       ),
+      home: const LoadingScreen(), // HomeScreen yerine LoadingScreen kullanın
+      debugShowCheckedModeBanner: false,
     );
   }
 }
