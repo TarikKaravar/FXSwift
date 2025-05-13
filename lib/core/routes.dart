@@ -22,8 +22,8 @@ final GoRouter router = GoRouter(
           builder: (context, state) => const HomeScreen(),
         ),
         GoRoute(
-          path: '/gold',
-          name: 'gold',
+          path: '/swap',
+          name: 'swap',
           builder: (context, state) => const SwapScreen(),
         ),
         GoRoute(
@@ -53,7 +53,7 @@ class MainScaffold extends StatelessWidget {
         context.go('/');
         break;
       case 1:
-        context.go('/gold');
+        context.go('/swap');
         break;
       case 2:
         context.go('/settings');

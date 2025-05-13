@@ -33,7 +33,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> fetchData() async {
     try {
-      final result = await CurrencyService.fetchPopularRatesWithChange();
+      final result = await CurrencyService.fetchPopularRates();
+      if (!mounted) return;
       setState(() {
         for (final entry in result.entries) {
           final code = entry.key;
@@ -44,6 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     } catch (e) {
       print('Hata oluştu: $e');
+      if (!mounted) return;
       setState(() {
         lastUpdated = DateTime.now().toIso8601String();
       });

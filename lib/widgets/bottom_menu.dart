@@ -6,7 +6,7 @@ class BottomMenu extends StatelessWidget {
 
   int _calculateSelectedIndex(BuildContext context) {
     final location = GoRouterState.of(context).uri.toString();
-    if (location.startsWith('/gold')) return 1;
+    if (location.startsWith('/swap')) return 1;
     if (location.startsWith('/settings')) return 2;
     return 0;
   }
@@ -17,7 +17,7 @@ class BottomMenu extends StatelessWidget {
         context.go('/');
         break;
       case 1:
-        context.go('/gold');
+        context.go('/swap');
         break;
       case 2:
         context.go('/settings');
