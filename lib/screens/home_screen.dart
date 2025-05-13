@@ -20,8 +20,11 @@ class _HomeScreenState extends State<HomeScreen> {
     "CHF/TRY": {"name": "İsviçre Frangı", "buy": 45.330, "sell": 45.821, "change": -1.75},
     "AUD/TRY": {"name": "Avustralya Doları", "buy": 23.868, "sell": 24.616, "change": -0.78},
     "CAD/TRY": {"name": "Kanada Doları", "buy": 27.157, "sell": 27.923, "change": -0.58},
-    "SAR/TRY": {"name": "Suudi Arabistan Riyali", "buy": 10.180, "sell": 10.487, "change": -0.05},
-    "JPY/TRY": {"name": "Japon Yeni", "buy": 0.2570, "sell": 0.2606, "change": -2.21},
+    "SAR/TRY": {"name": "Suudi Arabistan Riyali", "buy": 10.180, "sell": 10.487, "change": -0.05},        
+    "JPY/TRY": {"name": "Japon Yeni", "buy": 0.257, "sell": 0.261, "change": -2.21},
+    
+
+
   };
 
   @override
@@ -111,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       lastUpdated != null
                           ? "Son Güncelleme: ${formatTime(lastUpdated!)}"
                           : "Güncelleniyor...",
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                      style: const TextStyle(fontSize: 12, color: Color.fromARGB(255, 0, 0, 0)),
                     ),
                   ),
                 ],
@@ -245,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 4),
                     Text(
                       currencyName,
-                      style: TextStyle(color: Colors.grey.shade700, fontSize: 14),
+                      style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0), fontSize: 14),
                     ),
                   ],
                 ),
@@ -305,11 +308,11 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.access_time, color: Colors.grey.shade700, size: 12),
+                Icon(Icons.access_time, color: const Color.fromARGB(255, 0, 0, 0), size: 12),
                 const SizedBox(width: 4),
                 Text(
                   lastUpdate,
-                  style: TextStyle(color: Colors.grey.shade700, fontSize: 12),
+                  style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0), fontSize: 12),
                 ),
               ],
             ),
