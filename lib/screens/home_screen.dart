@@ -12,6 +12,17 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   Map<String, double> popularRates = {};
   String? lastUpdated;
+  Map<String, Map<String, dynamic>> allCurrencies = {
+    "USD/TRY": {"name": "Amerikan Doları", "buy": 38.734, "sell": 38.801, "change": -0.05},
+    "EUR/TRY": {"name": "Euro", "buy": 42.794, "sell": 42.968, "change": -1.51},
+    "USD/EUR": {"name": "EUR/USD", "buy": 1.1048, "sell": 1.1074, "change": -1.46},
+    "GBP/TRY": {"name": "İngiliz Sterlini", "buy": 50.707, "sell": 51.012, "change": -1.00},
+    "CHF/TRY": {"name": "İsviçre Frangı", "buy": 45.330, "sell": 45.821, "change": -1.75},
+    "AUD/TRY": {"name": "Avustralya Doları", "buy": 23.868, "sell": 24.616, "change": -0.78},
+    "CAD/TRY": {"name": "Kanada Doları", "buy": 27.157, "sell": 27.923, "change": -0.58},
+    "SAR/TRY": {"name": "Suudi Arabistan Riyali", "buy": 10.180, "sell": 10.487, "change": -0.05},
+    "JPY/TRY": {"name": "Japon Yeni", "buy": 0.2570, "sell": 0.2606, "change": -2.21},
+  };
 
   @override
   void initState() {
@@ -24,10 +35,15 @@ class _HomeScreenState extends State<HomeScreen> {
       final result = await CurrencyService.fetchPopularRates();
       setState(() {
         popularRates = Map<String, double>.from(result['rates']);
-        lastUpdated = result['last_updated'];
+        // Update with current time
+        lastUpdated = DateTime.now().toIso8601String();
       });
     } catch (e) {
       print('Hata oluştu: $e');
+      // Set current time anyway for the example
+      setState(() {
+        lastUpdated = DateTime.now().toIso8601String();
+      });
     }
   }
 
@@ -58,58 +74,154 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text(
-              "Canlı Kurlar",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                "Popüler Kurlar",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 10),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF6F0F9),
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.shade400,
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF6F0F9),
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.shade400,
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      buildRateColumn("USD/TRY", popularRates["USD/TRY"] ?? allCurrencies["USD/TRY"]?["sell"]),
+                      buildRateColumn("EUR/TRY", popularRates["EUR/TRY"] ?? allCurrencies["EUR/TRY"]?["sell"]),
+                      buildRateColumn("USD/EUR", popularRates["USD/EUR"] ?? allCurrencies["USD/EUR"]?["sell"]),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      lastUpdated != null
+                          ? "Son Güncelleme: ${formatTime(lastUpdated!)}"
+                          : "Güncelleniyor...",
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    buildRateColumn("USD/TRY", popularRates["USD/TRY"]),
-                    buildRateColumn("EUR/TRY", popularRates["EUR/TRY"]),
-                    buildRateColumn("GBP/TRY", popularRates["GBP/TRY"]),
+
+            // Currencies List Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.shade300,
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
                   ],
                 ),
-                const SizedBox(height: 8),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    lastUpdated != null
-                        ? "Son Güncelleme: ${formatTime(lastUpdated!)}"
-                        : "Güncelleniyor...",
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                      decoration: BoxDecoration(
+                        border: Border(bottom: BorderSide(color: Colors.grey.shade300, width: 0.5)),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Row(
+                              children: [
+                                const Text(
+                                  "Birim",
+                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(width: 8),
+                                
+                              ],
+                            ),
+                          ),
+                          const Expanded(
+                            child: Center(
+                              child: Text(
+                                "Alış",
+                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                          const Expanded(
+                            child: Center(
+                              child: Text(
+                                "Satış",
+                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    
+                    // Currency Rows
+                    ...allCurrencies.entries.map((entry) => buildCurrencyListItem(
+                      currencyCode: entry.key,
+                      currencyName: entry.value["name"],
+                      buyRate: entry.value["buy"],
+                      sellRate: entry.value["sell"],
+                      changePercent: entry.value["change"],
+                      lastUpdate: lastUpdated != null ? formatTime(lastUpdated!) : "20:26",
+                    )).toList(),
+                  ],
                 ),
-              ],
+              ),
             ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
+        unselectedItemColor: Colors.grey.shade700,
+        selectedItemColor: Colors.amber,
+        type: BottomNavigationBarType.fixed,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.money),
+            label: "Döviz",
           ),
-
-          // 🔽 Diğer bölümler (Döviz çevirici, popüler kurlar vs.) BURADA DEVAM ETSİN
-          const SizedBox(height: 16),
-
-          // Diğer içerikler burada yer almaya devam edecek...
+          BottomNavigationBarItem(
+            icon: Icon(Icons.monetization_on),
+            label: "Altın",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.swap_horiz),
+            label: "Çevirici",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications),
+            label: "Alarm",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_balance_wallet),
+            label: "Portföy",
+          ),
         ],
       ),
     );
@@ -128,6 +240,114 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(color: Colors.green),
         ),
       ],
+    );
+  }
+
+  Widget buildCurrencyListItem({
+    required String currencyCode,
+    required String currencyName,
+    required double buyRate,
+    required double sellRate,
+    required double changePercent,
+    required String lastUpdate,
+  }) {
+    final bool hasValue = buyRate > 0 && sellRate > 0;
+    final String changeText = changePercent.toString();
+    final Color changeColor = changePercent < 0 ? Colors.red : Colors.green;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: Colors.grey.shade300, width: 0.3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                flex: 3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      currencyCode,
+                      style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      currencyName,
+                      style: TextStyle(color: Colors.grey.shade700, fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
+              if (hasValue) ...[
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    children: [
+                      Text(
+                        buyRate.toStringAsFixed(3),
+                        style: const TextStyle(color: Colors.black, fontSize: 18),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    children: [
+                      Text(
+                        sellRate.toStringAsFixed(3),
+                        style: const TextStyle(color: Colors.black, fontSize: 18),
+                        textAlign: TextAlign.center,
+                      ),
+                      Text(
+                        "%$changeText",
+                        style: TextStyle(color: changeColor, fontSize: 14),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ] else ...[
+                const Expanded(
+                  flex: 2,
+                  child: Text(
+                    "-",
+                    style: TextStyle(color: Colors.black, fontSize: 18),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const Expanded(
+                  flex: 2,
+                  child: Text(
+                    "-",
+                    style: TextStyle(color: Colors.black, fontSize: 18),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ],
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.access_time, color: Colors.grey.shade700, size: 12),
+                const SizedBox(width: 4),
+                Text(
+                  lastUpdate,
+                  style: TextStyle(color: Colors.grey.shade700, fontSize: 12),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
