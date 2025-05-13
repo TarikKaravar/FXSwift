@@ -1,4 +1,3 @@
-// Gerekli importlar
 import 'package:flutter/material.dart';
 import '../services/currency_service.dart';
 
@@ -11,7 +10,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Map<String, double> popularRates = {};
+  Map<String, double> popularChanges = {};
   String? lastUpdated;
+
   Map<String, Map<String, dynamic>> allCurrencies = {
     "USD/TRY": {"name": "Amerikan Doları", "buy": 38.734, "sell": 38.801, "change": -0.05},
     "EUR/TRY": {"name": "Euro", "buy": 42.794, "sell": 42.968, "change": -1.51},
@@ -20,11 +21,8 @@ class _HomeScreenState extends State<HomeScreen> {
     "CHF/TRY": {"name": "İsviçre Frangı", "buy": 45.330, "sell": 45.821, "change": -1.75},
     "AUD/TRY": {"name": "Avustralya Doları", "buy": 23.868, "sell": 24.616, "change": -0.78},
     "CAD/TRY": {"name": "Kanada Doları", "buy": 27.157, "sell": 27.923, "change": -0.58},
-    "SAR/TRY": {"name": "Suudi Arabistan Riyali", "buy": 10.180, "sell": 10.487, "change": -0.05},        
+    "SAR/TRY": {"name": "Suudi Arabistan Riyali", "buy": 10.180, "sell": 10.487, "change": -0.05},
     "JPY/TRY": {"name": "Japon Yeni", "buy": 0.257, "sell": 0.261, "change": -2.21},
-    
-
-
   };
 
   @override
@@ -35,15 +33,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> fetchData() async {
     try {
-      final result = await CurrencyService.fetchPopularRates();
+      final result = await CurrencyService.fetchPopularRatesWithChange();
       setState(() {
-        popularRates = Map<String, double>.from(result['rates']);
-        // Update with current time
+        for (final entry in result.entries) {
+          final code = entry.key;
+          popularRates[code] = entry.value['sell']!;
+          popularChanges[code] = entry.value['change']!;
+        }
         lastUpdated = DateTime.now().toIso8601String();
       });
     } catch (e) {
       print('Hata oluştu: $e');
-      // Set current time anyway for the example
       setState(() {
         lastUpdated = DateTime.now().toIso8601String();
       });
@@ -69,7 +69,6 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: fetchData,
           ),
           const SizedBox(width: 8),
-
         ],
       ),
       body: SingleChildScrollView(
@@ -102,9 +101,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      buildRateColumn("USD/TRY", popularRates["USD/TRY"] ?? allCurrencies["USD/TRY"]?["sell"]),
-                      buildRateColumn("EUR/TRY", popularRates["EUR/TRY"] ?? allCurrencies["EUR/TRY"]?["sell"]),
-                      buildRateColumn("USD/EUR", popularRates["USD/EUR"] ?? allCurrencies["USD/EUR"]?["sell"]),
+                      buildRateColumn(
+                        "USD/TRY",
+                        popularRates["USD/TRY"] ?? allCurrencies["USD/TRY"]?["sell"],
+                        popularChanges["USD/TRY"] ?? allCurrencies["USD/TRY"]?["change"],
+                      ),
+                      buildRateColumn(
+                        "EUR/TRY",
+                        popularRates["EUR/TRY"] ?? allCurrencies["EUR/TRY"]?["sell"],
+                        popularChanges["EUR/TRY"] ?? allCurrencies["EUR/TRY"]?["change"],
+                      ),
+                      buildRateColumn(
+                        "USD/EUR",
+                        popularRates["USD/EUR"] ?? allCurrencies["USD/EUR"]?["sell"],
+                        popularChanges["USD/EUR"] ?? allCurrencies["USD/EUR"]?["change"],
+                      ),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -114,14 +125,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       lastUpdated != null
                           ? "Son Güncelleme: ${formatTime(lastUpdated!)}"
                           : "Güncelleniyor...",
-                      style: const TextStyle(fontSize: 12, color: Color.fromARGB(255, 0, 0, 0)),
+                      style: const TextStyle(fontSize: 12, color: Colors.black),
                     ),
                   ),
                 ],
               ),
             ),
-
-            // Currencies List Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
               child: Container(
@@ -145,20 +154,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         border: Border(bottom: BorderSide(color: Colors.grey.shade300, width: 0.5)),
                       ),
                       child: Row(
-                        children: [
+                        children: const [
                           Expanded(
-                            child: Row(
-                              children: [
-                                const Text(
-                                  "Birim",
-                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(width: 8),
-                                
-                              ],
+                            child: Text(
+                              "Birim",
+                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                             ),
                           ),
-                          const Expanded(
+                          Expanded(
                             child: Center(
                               child: Text(
                                 "Alış",
@@ -166,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                           ),
-                          const Expanded(
+                          Expanded(
                             child: Center(
                               child: Text(
                                 "Satış",
@@ -177,16 +180,25 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-                    
-                    // Currency Rows
-                    ...allCurrencies.entries.map((entry) => buildCurrencyListItem(
-                      currencyCode: entry.key,
-                      currencyName: entry.value["name"],
-                      buyRate: entry.value["buy"],
-                      sellRate: entry.value["sell"],
-                      changePercent: entry.value["change"],
-                      lastUpdate: lastUpdated != null ? formatTime(lastUpdated!) : "20:26",
-                    )).toList(),
+                    ...allCurrencies.entries.map((entry) {
+                      final code = entry.key;
+                      final name = entry.value['name'];
+                      final isLive = popularRates.containsKey(code);
+                      final buy = isLive ? popularRates[code]! - 0.05 : entry.value['buy'];
+                      final sell = isLive ? popularRates[code]! : entry.value['sell'];
+                      final change = isLive
+                          ? (popularChanges[code] ?? 0)
+                          : entry.value['change'];
+
+                      return buildCurrencyListItem(
+                        currencyCode: code,
+                        currencyName: name,
+                        buyRate: buy,
+                        sellRate: sell,
+                        changePercent: change,
+                        lastUpdate: lastUpdated != null ? formatTime(lastUpdated!) : "20:26",
+                      );
+                    }).toList(),
                   ],
                 ),
               ),
@@ -194,11 +206,13 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-
     );
   }
 
-  Widget buildRateColumn(String label, double? value) {
+  Widget buildRateColumn(String label, double? value, double? changePercent) {
+    final color = (changePercent ?? 0) < 0 ? Colors.red : Colors.green;
+    final changeText = changePercent != null ? "${changePercent.toStringAsFixed(2)}%" : "-";
+
     return Column(
       children: [
         Text(
@@ -206,9 +220,9 @@ class _HomeScreenState extends State<HomeScreen> {
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         Text(value != null ? value.toStringAsFixed(4) : '-'),
-        const Text(
-          '+0.80%',
-          style: TextStyle(color: Colors.green),
+        Text(
+          changeText,
+          style: TextStyle(color: color),
         ),
       ],
     );
@@ -248,7 +262,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 4),
                     Text(
                       currencyName,
-                      style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0), fontSize: 14),
+                      style: TextStyle(color: Colors.grey.shade700, fontSize: 14),
                     ),
                   ],
                 ),
@@ -256,14 +270,10 @@ class _HomeScreenState extends State<HomeScreen> {
               if (hasValue) ...[
                 Expanded(
                   flex: 2,
-                  child: Column(
-                    children: [
-                      Text(
-                        buyRate.toStringAsFixed(3),
-                        style: const TextStyle(color: Colors.black, fontSize: 18),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
+                  child: Text(
+                    buyRate.toStringAsFixed(3),
+                    style: const TextStyle(color: Colors.black, fontSize: 18),
+                    textAlign: TextAlign.center,
                   ),
                 ),
                 Expanded(
@@ -308,11 +318,11 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.access_time, color: const Color.fromARGB(255, 0, 0, 0), size: 12),
+                Icon(Icons.access_time, color: Colors.grey.shade700, size: 12),
                 const SizedBox(width: 4),
                 Text(
                   lastUpdate,
-                  style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0), fontSize: 12),
+                  style: TextStyle(color: Colors.grey.shade700, fontSize: 12),
                 ),
               ],
             ),
