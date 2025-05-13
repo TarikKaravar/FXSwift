@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/screens/loading_screen.dart';
-// Home ekranı için tek bir import kullanın - yol projenize göre doğruysa
-import 'package:flutter_app/screens/home_screen.dart';
+import 'package:flutter_app/core/routes.dart';
+import 'package:flutter_app/core/routes.dart';
+import '../widgets/bottom_menu.dart';// go_router yapılandırman burada olmalı
 
 void main() {
   runApp(const MyApp());
@@ -12,13 +12,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Döviz Dönüştürücü',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: 'Roboto',
       ),
-      home: const LoadingScreen(), // HomeScreen yerine LoadingScreen kullanın
+      routerConfig: router, // go_router yapılandırması buradan geliyor
       debugShowCheckedModeBanner: false,
     );
   }

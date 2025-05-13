@@ -1,4 +1,4 @@
-// currency_services.dart
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -19,7 +19,7 @@ class CurrencyService {
     final base = 'USD';
     final url = Uri.parse('$_baseUrl?apikey=$_apiKey&base_currency=$base&currencies=$currencies');
 
-    print('API URL: $url'); // URL'yi konsola yazdır
+    print('API URL: $url');
 
     final response = await http.get(url);
 
@@ -29,7 +29,7 @@ class CurrencyService {
       final lastUpdated = jsonBody['meta']['last_updated_at'];
 
       print('Veri başarıyla alındı!'); // Başarı mesajı
-      print('Son Güncelleme Zamanı: $lastUpdated'); // Son güncelleme zamanını konsola yazdır
+      print('Son Güncelleme Zamanı: $lastUpdated');
 
       Map<String, double> rates = {};
 
@@ -40,13 +40,13 @@ class CurrencyService {
         if (baseCode == base && data[targetCode] != null) {
           final rate = (data[targetCode]['value'] as num).toDouble();
           rates[pair] = rate;
-          print('$pair: $rate'); // Her döviz kuru için değer yazdır
+          print('$pair: $rate'); 
         } else if (baseCode != base && data[baseCode] != null && data[targetCode] != null) {
           double inverse = (data[baseCode]['value'] as num).toDouble();
           double target = (data[targetCode]['value'] as num).toDouble();
           double rate = target / inverse;
           rates[pair] = rate;
-          print('$pair: $rate'); // Her döviz kuru için değer yazdır
+          print('$pair: $rate'); 
         }
       }
 
@@ -55,7 +55,7 @@ class CurrencyService {
         'last_updated': lastUpdated,
       };
     } else {
-      print('Hata oluştu: ${response.statusCode}'); // Hata durumunda mesaj yazdır
+      print('Hata oluştu: ${response.statusCode}'); 
       throw Exception('Döviz kurları alınamadı: ${response.statusCode}');
     }
   }

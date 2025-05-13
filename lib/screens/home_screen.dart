@@ -66,12 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: fetchData,
           ),
           const SizedBox(width: 8),
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              // Ayarlar sayfasına yönlendirme vs.
-            },
-          ),
+
         ],
       ),
       body: SingleChildScrollView(
@@ -196,34 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        unselectedItemColor: Colors.grey.shade700,
-        selectedItemColor: Colors.amber,
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.money),
-            label: "Döviz",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.monetization_on),
-            label: "Altın",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.swap_horiz),
-            label: "Çevirici",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: "Alarm",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance_wallet),
-            label: "Portföy",
-          ),
-        ],
-      ),
+
     );
   }
 
