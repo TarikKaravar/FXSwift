@@ -24,6 +24,7 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
 
   final List<CurrencyData> _currencies = [
     CurrencyData(code: 'USD', name: 'Amerikan Doları', rate: 38.76),
+    CurrencyData(code: 'TRY', name: 'Türk Lirası', rate: 1.0),
     CurrencyData(code: 'EUR', name: 'Avrupa Eurosu', rate: 41.25),
     CurrencyData(code: 'GBP', name: 'İngiliz Sterlini', rate: 49.35),
     CurrencyData(code: 'JPY', name: 'Japon Yeni', rate: 0.25),
