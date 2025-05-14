@@ -63,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.amber,
+        backgroundColor: const Color.fromRGBO(255, 193, 7, 1),
         title: const Text("FXSwift"),
         actions: [
           IconButton(
