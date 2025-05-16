@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/currency_service.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -33,14 +34,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> fetchData() async {
     try {
-      final result = await CurrencyService.fetchPopularRates();
+      final result = await CurrencyService.fetchPopularRates("USD");
       if (!mounted) return;
       setState(() {
-        for (final entry in result.entries) {
-          final code = entry.key;
-          popularRates[code] = entry.value['sell']!;
-          popularChanges[code] = entry.value['change']!;
-        }
+       for (final entry in result.entries) {
+      final code = entry.key;
+      final sell = entry.value; // zaten double
+      popularRates[code] = sell;
+}
+
         lastUpdated = DateTime.now().toIso8601String();
       });
     } catch (e) {
@@ -242,94 +244,107 @@ class _HomeScreenState extends State<HomeScreen> {
     final String changeText = changePercent.toString();
     final Color changeColor = changePercent < 0 ? Colors.red : Colors.green;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey.shade300, width: 0.3)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                flex: 3,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      currencyCode,
-                      style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      currencyName,
-                      style: TextStyle(color: Colors.grey.shade700, fontSize: 14),
-                    ),
-                  ],
-                ),
-              ),
-              if (hasValue) ...[
+    return InkWell(
+      onTap: () {
+        // GoRouter ile navigasyon - context.push kullanarak detay sayfasına geçiş
+        context.push('/currency-detail/$currencyCode', extra: {
+          'currencyName': currencyName,
+          'buyRate': buyRate,
+          'sellRate': sellRate,
+          'changePercent': changePercent,
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: Colors.grey.shade300, width: 0.3)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
                 Expanded(
-                  flex: 2,
-                  child: Text(
-                    buyRate.toStringAsFixed(3),
-                    style: const TextStyle(color: Colors.black, fontSize: 18),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
+                  flex: 3,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        sellRate.toStringAsFixed(3),
-                        style: const TextStyle(color: Colors.black, fontSize: 18),
-                        textAlign: TextAlign.center,
+                        currencyCode,
+                        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
                       ),
+                      const SizedBox(height: 4),
                       Text(
-                        "%$changeText",
-                        style: TextStyle(color: changeColor, fontSize: 14),
-                        textAlign: TextAlign.center,
+                        currencyName,
+                        style: TextStyle(color: Colors.grey.shade700, fontSize: 14),
                       ),
                     ],
                   ),
                 ),
-              ] else ...[
-                const Expanded(
-                  flex: 2,
-                  child: Text(
-                    "-",
-                    style: TextStyle(color: Colors.black, fontSize: 18),
-                    textAlign: TextAlign.center,
+                if (hasValue) ...[
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      buyRate.toStringAsFixed(3),
+                      style: const TextStyle(color: Colors.black, fontSize: 18),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                ),
-                const Expanded(
-                  flex: 2,
-                  child: Text(
-                    "-",
-                    style: TextStyle(color: Colors.black, fontSize: 18),
-                    textAlign: TextAlign.center,
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      children: [
+                        Text(
+                          sellRate.toStringAsFixed(3),
+                          style: const TextStyle(color: Colors.black, fontSize: 18),
+                          textAlign: TextAlign.center,
+                        ),
+                        Text(
+                          "%$changeText",
+                          style: TextStyle(color: changeColor, fontSize: 14),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ],
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.access_time, color: Colors.grey.shade700, size: 12),
-                const SizedBox(width: 4),
-                Text(
-                  lastUpdate,
-                  style: TextStyle(color: Colors.grey.shade700, fontSize: 12),
-                ),
+                ] else ...[
+                  const Expanded(
+                    flex: 2,
+                    child: Text(
+                      "-",
+                      style: TextStyle(color: Colors.black, fontSize: 18),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const Expanded(
+                    flex: 2,
+                    child: Text(
+                      "-",
+                      style: TextStyle(color: Colors.black, fontSize: 18),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
               ],
             ),
-          ),
-        ],
+            Align(
+              alignment: Alignment.centerRight,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.access_time, color: Colors.grey.shade700, size: 12),
+                  const SizedBox(width: 4),
+                  Text(
+                    lastUpdate,
+                    style: TextStyle(color: Colors.grey.shade700, fontSize: 12),
+                  ),
+                  const SizedBox(width: 8),
+                  Icon(Icons.arrow_forward_ios, color: Colors.grey.shade500, size: 12),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
