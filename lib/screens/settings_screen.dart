@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'profile_screen.dart';
+import 'theme_screen.dart';
+import 'language_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -6,10 +9,9 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: Colors.white,
       body: Column(
         children: [
-          // Üst başlık kısmı
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 20),
@@ -17,20 +19,19 @@ class SettingsScreen extends StatelessWidget {
               'FXSwift',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Color.fromARGB(255, 0, 0, 0),
+                color: Colors.black,
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          // Ana içerik kısmı
           Expanded(
             child: Container(
               margin: const EdgeInsets.all(20),
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Colors.white,
-                border: Border.all(color: const Color.fromARGB(255, 255, 255, 255), width: 3),
+                border: Border.all(color: Colors.white, width: 3),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Column(
@@ -121,167 +122,3 @@ class SettingsScreen extends StatelessWidget {
   }
 }
 
-// Profil ekranı
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-      appBar: AppBar(
-        title: const Text(
-          'Profil',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        iconTheme: const IconThemeData(color: Color.fromARGB(255, 0, 0, 0)),
-      ),
-      body: Container(
-        margin: const EdgeInsets.all(20),
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: const Color.fromARGB(255, 255, 255, 255), width: 3),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: const Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.person, size: 80, color: Colors.black),
-              SizedBox(height: 20),
-              Text(
-                'Profil Ayarları',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                'Profil bilgilerinizi buradan düzenleyebilirsiniz.',
-                style: TextStyle(fontSize: 16, color: Colors.black54),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// Tema ekranı
-class ThemeScreen extends StatelessWidget {
-  const ThemeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-      appBar: AppBar(
-        title: const Text(
-          'Uygulama Teması',
-          style: TextStyle(
-            color: Color.fromARGB(255, 0, 0, 0),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        iconTheme: const IconThemeData(color: Color.fromARGB(255, 0, 0, 0)),
-      ),
-      body: Container(
-        margin: const EdgeInsets.all(20),
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: const Color.fromARGB(255, 255, 255, 255), width: 3),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: const Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.palette, size: 80, color: Colors.black),
-              SizedBox(height: 20),
-              Text(
-                'Tema Ayarları',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                'Uygulama temasını buradan değiştirebilirsiniz.',
-                style: TextStyle(fontSize: 16, color: Colors.black54),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// Dil ekranı
-class LanguageScreen extends StatelessWidget {
-  const LanguageScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-      appBar: AppBar(
-        title: const Text(
-          'Dil Seçenekleri',
-          style: TextStyle(
-            color: Color.fromARGB(255, 0, 0, 0),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        iconTheme: const IconThemeData(color: Color.fromARGB(255, 0, 0, 0)),
-      ),
-      body: Container(
-        margin: const EdgeInsets.all(20),
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: const Color.fromARGB(255, 255, 255, 255), width: 3),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: const Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.language, size: 80, color: Colors.black),
-              SizedBox(height: 20),
-              Text(
-                'Dil Ayarları',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                'Uygulama dilini buradan seçebilirsiniz.',
-                style: TextStyle(fontSize: 16, color: Colors.black54),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}

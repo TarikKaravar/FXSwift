@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/core/routes.dart';
 import 'package:flutter_app/screens/loading_screen.dart';
+import 'package:flutter_app/screens/theme_provider.dart';
+import 'package:flutter_app/theme_provider.dart'; // BURASI ÖNEMLİ
+import 'package:provider/provider.dart'; // BURASI DA
 
 void main() {
-  runApp(const FXSwiftApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: const FXSwiftApp(),
+    ),
+  );
 }
-
 class FXSwiftApp extends StatelessWidget {
   const FXSwiftApp({super.key});
 
