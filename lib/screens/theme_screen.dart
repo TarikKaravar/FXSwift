@@ -60,7 +60,7 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
         final isDark = themeProvider.isDarkMode;
 
         return Scaffold(
-          backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.white,
+          backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.grey[50],
           appBar: AppBar(
             title: Text(
               'Uygulama Teması',
@@ -69,11 +69,13 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
                 fontWeight: FontWeight.bold,
               ),
             ),
-            backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.white,
+            backgroundColor: isDark 
+              ? const Color(0xFF2D2D2D) 
+              : const Color.fromRGBO(255, 193, 7, 1),
             iconTheme: IconThemeData(
               color: isDark ? Colors.white : Colors.black,
             ),
-            elevation: 0,
+            elevation: isDark ? 0 : 2,
           ),
           body: Container(
             margin: const EdgeInsets.all(20),
@@ -125,7 +127,7 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
                   ),
                   const SizedBox(height: 15),
                   Text(
-                    'Uygulama temasını aşağıdaki düğme ile değiştirebilirsiniz.',
+                    'Uygulama temasını aşağıdaki düğme ile değiştirebilirsiniz.\nBu ayar tüm uygulama sayfalarında geçerli olacaktır.',
                     style: TextStyle(
                       fontSize: 16,
                       color: isDark ? Colors.grey[300] : Colors.black54,
@@ -188,54 +190,53 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
                           ],
                         ),
                         GestureDetector(
-  onTap: () {
-    themeProvider.toggleTheme(!themeProvider.isDarkMode);
-  },
-  child: AnimatedContainer(
-    duration: const Duration(milliseconds: 200),
-    width: 60,
-    height: 30,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(15),
-      color: isDark 
-        ? const Color(0xFF6366F1)
-        : Colors.grey[300],
-    ),
-    child: Stack(
-      children: [
-        AnimatedPositioned(
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeInOut,
-          left: isDark ? 30 : 2,
-          top: 2,
-          child: Container(
-            width: 26,
-            height: 26,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Icon(
-              isDark ? Icons.nightlight_round : Icons.wb_sunny,
-              size: 16,
-              color: isDark 
-                ? const Color(0xFF6366F1)
-                : const Color(0xFFF59E0B),
-            ),
-          ),
-        ),
-      ],
-    ),
-  ),
-),
-
+                          onTap: () {
+                            themeProvider.toggleTheme(!themeProvider.isDarkMode);
+                          },
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            width: 60,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: isDark 
+                                ? const Color(0xFF6366F1)
+                                : Colors.grey[300],
+                            ),
+                            child: Stack(
+                              children: [
+                                AnimatedPositioned(
+                                  duration: const Duration(milliseconds: 200),
+                                  curve: Curves.easeInOut,
+                                  left: isDark ? 30 : 2,
+                                  top: 2,
+                                  child: Container(
+                                    width: 26,
+                                    height: 26,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.2),
+                                          blurRadius: 4,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Icon(
+                                      isDark ? Icons.nightlight_round : Icons.wb_sunny,
+                                      size: 16,
+                                      color: isDark 
+                                        ? const Color(0xFF6366F1)
+                                        : const Color(0xFFF59E0B),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -265,7 +266,7 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            'Tema tercihiniz otomatik olarak kaydedilir.',
+                            'Tema tercihiniz otomatik olarak kaydedilir ve tüm sayfalarda uygulanır.',
                             style: TextStyle(
                               fontSize: 14,
                               color: isDark 
@@ -273,6 +274,57 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
                                 : const Color(0xFF3B82F6),
                             ),
                           ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  // Örnek gösterim alanı
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: isDark ? const Color(0xFF525252) : const Color(0xFFF6F0F9),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: isDark ? const Color(0xFF6B7280) : Colors.grey.shade300,
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Örnek Döviz Kartı',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? Colors.white : Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'USD/TRY',
+                              style: TextStyle(
+                                color: isDark ? Colors.white : Colors.black,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              '38.734',
+                              style: TextStyle(
+                                color: isDark ? Colors.white : Colors.black,
+                              ),
+                            ),
+                            Text(
+                              '%1.25',
+                              style: TextStyle(
+                                color: isDark 
+                                  ? const Color(0xFF10B981) 
+                                  : Colors.green,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../services/currency_service.dart';
 import 'package:go_router/go_router.dart';
+import 'theme_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -37,12 +39,11 @@ class _HomeScreenState extends State<HomeScreen> {
       final result = await CurrencyService.fetchPopularRates("USD");
       if (!mounted) return;
       setState(() {
-       for (final entry in result.entries) {
-      final code = entry.key;
-      final sell = entry.value; // zaten double
-      popularRates[code] = sell;
-}
-
+        for (final entry in result.entries) {
+          final code = entry.key;
+          final sell = entry.value; // zaten double
+          popularRates[code] = sell;
+        }
         lastUpdated = DateTime.now().toIso8601String();
       });
     } catch (e) {
@@ -63,167 +64,244 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(255, 193, 7, 1),
-        title: const Text("FXSwift"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: fetchData,
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                "Popüler Kurlar",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        final isDark = themeProvider.isDarkMode;
+        
+        return Scaffold(
+          backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.grey[50],
+          appBar: AppBar(
+            backgroundColor: isDark 
+              ? const Color(0xFF2D2D2D) 
+              : const Color.fromRGBO(255, 193, 7, 1),
+            title: Text(
+              "FXSwift",
+              style: TextStyle(
+                color: isDark ? Colors.white : Colors.black,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF6F0F9),
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.shade400,
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+            actions: [
+              IconButton(
+                icon: Icon(
+                  Icons.refresh,
+                  color: isDark ? Colors.white : Colors.black,
+                ),
+                onPressed: fetchData,
               ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      buildRateColumn(
-                        "USD/TRY",
-                        popularRates["USD/TRY"] ?? allCurrencies["USD/TRY"]?["sell"],
-                        popularChanges["USD/TRY"] ?? allCurrencies["USD/TRY"]?["change"],
-                      ),
-                      buildRateColumn(
-                        "EUR/TRY",
-                        popularRates["EUR/TRY"] ?? allCurrencies["EUR/TRY"]?["sell"],
-                        popularChanges["EUR/TRY"] ?? allCurrencies["EUR/TRY"]?["change"],
-                      ),
-                      buildRateColumn(
-                        "USD/EUR",
-                        popularRates["USD/EUR"] ?? allCurrencies["USD/EUR"]?["sell"],
-                        popularChanges["USD/EUR"] ?? allCurrencies["USD/EUR"]?["change"],
+              IconButton(
+                icon: Icon(
+                  isDark ? Icons.light_mode : Icons.dark_mode,
+                  color: isDark ? Colors.white : Colors.black,
+                ),
+                onPressed: () {
+                  themeProvider.toggleTheme(!isDark);
+                },
+              ),
+              const SizedBox(width: 8),
+            ],
+            elevation: isDark ? 0 : 2,
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    "Popüler Kurlar",
+                    style: TextStyle(
+                      fontSize: 20, 
+                      fontWeight: FontWeight.bold,
+                      color: isDark ? Colors.white : Colors.black,
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: isDark 
+                      ? const Color(0xFF2D2D2D) 
+                      : const Color(0xFFF6F0F9),
+                    borderRadius: BorderRadius.circular(16),
+                    border: isDark 
+                      ? Border.all(color: const Color(0xFF404040), width: 1)
+                      : null,
+                    boxShadow: [
+                      BoxShadow(
+                        color: isDark 
+                          ? Colors.black.withOpacity(0.3)
+                          : Colors.grey.shade400,
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      lastUpdated != null
-                          ? "Son Güncelleme: ${formatTime(lastUpdated!)}"
-                          : "Güncelleniyor...",
-                      style: const TextStyle(fontSize: 12, color: Colors.black),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.shade300,
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                      decoration: BoxDecoration(
-                        border: Border(bottom: BorderSide(color: Colors.grey.shade300, width: 0.5)),
-                      ),
-                      child: Row(
-                        children: const [
-                          Expanded(
-                            child: Text(
-                              "Birim",
-                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                            ),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          buildRateColumn(
+                            "USD/TRY",
+                            popularRates["USD/TRY"] ?? allCurrencies["USD/TRY"]?["sell"],
+                            popularChanges["USD/TRY"] ?? allCurrencies["USD/TRY"]?["change"],
+                            isDark,
                           ),
-                          Expanded(
-                            child: Center(
-                              child: Text(
-                                "Alış",
-                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                              ),
-                            ),
+                          buildRateColumn(
+                            "EUR/TRY",
+                            popularRates["EUR/TRY"] ?? allCurrencies["EUR/TRY"]?["sell"],
+                            popularChanges["EUR/TRY"] ?? allCurrencies["EUR/TRY"]?["change"],
+                            isDark,
                           ),
-                          Expanded(
-                            child: Center(
-                              child: Text(
-                                "Satış",
-                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                              ),
-                            ),
+                          buildRateColumn(
+                            "USD/EUR",
+                            popularRates["USD/EUR"] ?? allCurrencies["USD/EUR"]?["sell"],
+                            popularChanges["USD/EUR"] ?? allCurrencies["USD/EUR"]?["change"],
+                            isDark,
                           ),
                         ],
                       ),
-                    ),
-                    ...allCurrencies.entries.map((entry) {
-                      final code = entry.key;
-                      final name = entry.value['name'];
-                      final isLive = popularRates.containsKey(code);
-                      final buy = isLive ? popularRates[code]! - 0.05 : entry.value['buy'];
-                      final sell = isLive ? popularRates[code]! : entry.value['sell'];
-                      final change = isLive
-                          ? (popularChanges[code] ?? 0)
-                          : entry.value['change'];
-
-                      return buildCurrencyListItem(
-                        currencyCode: code,
-                        currencyName: name,
-                        buyRate: buy,
-                        sellRate: sell,
-                        changePercent: change,
-                        lastUpdate: lastUpdated != null ? formatTime(lastUpdated!) : "20:26",
-                      );
-                    }).toList(),
-                  ],
+                      const SizedBox(height: 8),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          lastUpdated != null
+                              ? "Son Güncelleme: ${formatTime(lastUpdated!)}"
+                              : "Güncelleniyor...",
+                          style: TextStyle(
+                            fontSize: 12, 
+                            color: isDark ? Colors.grey[300] : Colors.black,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: isDark 
+                        ? Border.all(color: const Color(0xFF404040), width: 1)
+                        : null,
+                      boxShadow: [
+                        BoxShadow(
+                          color: isDark 
+                            ? Colors.black.withOpacity(0.3)
+                            : Colors.grey.shade300,
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
+                                color: isDark 
+                                  ? const Color(0xFF404040) 
+                                  : Colors.grey.shade300, 
+                                width: 0.5
+                              )
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  "Birim",
+                                  style: TextStyle(
+                                    color: isDark ? Colors.white : Colors.black, 
+                                    fontWeight: FontWeight.bold
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Center(
+                                  child: Text(
+                                    "Alış",
+                                    style: TextStyle(
+                                      color: isDark ? Colors.white : Colors.black, 
+                                      fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Center(
+                                  child: Text(
+                                    "Satış",
+                                    style: TextStyle(
+                                      color: isDark ? Colors.white : Colors.black, 
+                                      fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        ...allCurrencies.entries.map((entry) {
+                          final code = entry.key;
+                          final name = entry.value['name'];
+                          final isLive = popularRates.containsKey(code);
+                          final buy = isLive ? popularRates[code]! - 0.05 : entry.value['buy'];
+                          final sell = isLive ? popularRates[code]! : entry.value['sell'];
+                          final change = isLive
+                              ? (popularChanges[code] ?? 0)
+                              : entry.value['change'];
+
+                          return buildCurrencyListItem(
+                            currencyCode: code,
+                            currencyName: name,
+                            buyRate: buy,
+                            sellRate: sell,
+                            changePercent: change,
+                            lastUpdate: lastUpdated != null ? formatTime(lastUpdated!) : "20:26",
+                            isDark: isDark,
+                          );
+                        }).toList(),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
-  Widget buildRateColumn(String label, double? value, double? changePercent) {
-    final color = (changePercent ?? 0) < 0 ? Colors.red : Colors.green;
+  Widget buildRateColumn(String label, double? value, double? changePercent, bool isDark) {
+    final color = (changePercent ?? 0) < 0 
+      ? (isDark ? const Color(0xFFEF4444) : Colors.red)
+      : (isDark ? const Color(0xFF10B981) : Colors.green);
     final changeText = changePercent != null ? "${changePercent.toStringAsFixed(2)}%" : "-";
 
     return Column(
       children: [
         Text(
           label,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: isDark ? Colors.white : Colors.black,
+          ),
         ),
-        Text(value != null ? value.toStringAsFixed(4) : '-'),
+        Text(
+          value != null ? value.toStringAsFixed(4) : '-',
+          style: TextStyle(
+            color: isDark ? Colors.white : Colors.black,
+          ),
+        ),
         Text(
           changeText,
           style: TextStyle(color: color),
@@ -239,10 +317,13 @@ class _HomeScreenState extends State<HomeScreen> {
     required double sellRate,
     required double changePercent,
     required String lastUpdate,
+    required bool isDark,
   }) {
     final bool hasValue = buyRate > 0 && sellRate > 0;
     final String changeText = changePercent.toString();
-    final Color changeColor = changePercent < 0 ? Colors.red : Colors.green;
+    final Color changeColor = changePercent < 0 
+      ? (isDark ? const Color(0xFFEF4444) : Colors.red)
+      : (isDark ? const Color(0xFF10B981) : Colors.green);
 
     return InkWell(
       onTap: () {
@@ -254,10 +335,23 @@ class _HomeScreenState extends State<HomeScreen> {
           'changePercent': changePercent,
         });
       },
+      splashColor: isDark 
+        ? Colors.white.withOpacity(0.1) 
+        : Colors.grey.withOpacity(0.1),
+      highlightColor: isDark 
+        ? Colors.white.withOpacity(0.05) 
+        : Colors.grey.withOpacity(0.05),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: Colors.grey.shade300, width: 0.3)),
+          border: Border(
+            bottom: BorderSide(
+              color: isDark 
+                ? const Color(0xFF404040) 
+                : Colors.grey.shade300, 
+              width: 0.3
+            )
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -271,12 +365,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Text(
                         currencyCode,
-                        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
+                        style: TextStyle(
+                          color: isDark ? Colors.white : Colors.black, 
+                          fontWeight: FontWeight.bold, 
+                          fontSize: 16
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         currencyName,
-                        style: TextStyle(color: Colors.grey.shade700, fontSize: 14),
+                        style: TextStyle(
+                          color: isDark ? Colors.grey[400] : Colors.grey.shade700, 
+                          fontSize: 14
+                        ),
                       ),
                     ],
                   ),
@@ -286,7 +387,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     flex: 2,
                     child: Text(
                       buyRate.toStringAsFixed(3),
-                      style: const TextStyle(color: Colors.black, fontSize: 18),
+                      style: TextStyle(
+                        color: isDark ? Colors.white : Colors.black, 
+                        fontSize: 18
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -296,7 +400,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Text(
                           sellRate.toStringAsFixed(3),
-                          style: const TextStyle(color: Colors.black, fontSize: 18),
+                          style: TextStyle(
+                            color: isDark ? Colors.white : Colors.black, 
+                            fontSize: 18
+                          ),
                           textAlign: TextAlign.center,
                         ),
                         Text(
@@ -308,19 +415,25 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ] else ...[
-                  const Expanded(
+                  Expanded(
                     flex: 2,
                     child: Text(
                       "-",
-                      style: TextStyle(color: Colors.black, fontSize: 18),
+                      style: TextStyle(
+                        color: isDark ? Colors.white : Colors.black, 
+                        fontSize: 18
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  const Expanded(
+                  Expanded(
                     flex: 2,
                     child: Text(
                       "-",
-                      style: TextStyle(color: Colors.black, fontSize: 18),
+                      style: TextStyle(
+                        color: isDark ? Colors.white : Colors.black, 
+                        fontSize: 18
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -332,14 +445,25 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.access_time, color: Colors.grey.shade700, size: 12),
+                  Icon(
+                    Icons.access_time, 
+                    color: isDark ? Colors.grey[400] : Colors.grey.shade700, 
+                    size: 12
+                  ),
                   const SizedBox(width: 4),
                   Text(
                     lastUpdate,
-                    style: TextStyle(color: Colors.grey.shade700, fontSize: 12),
+                    style: TextStyle(
+                      color: isDark ? Colors.grey[400] : Colors.grey.shade700, 
+                      fontSize: 12
+                    ),
                   ),
                   const SizedBox(width: 8),
-                  Icon(Icons.arrow_forward_ios, color: Colors.grey.shade500, size: 12),
+                  Icon(
+                    Icons.arrow_forward_ios, 
+                    color: isDark ? Colors.grey[500] : Colors.grey.shade500, 
+                    size: 12
+                  ),
                 ],
               ),
             ),

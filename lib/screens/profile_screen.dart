@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'theme_provider.dart';
 
 // Profil ekranı - Giriş Ekranı
 class ProfileScreen extends StatefulWidget {
@@ -68,188 +70,254 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-      appBar: AppBar(
-        title: const Text(
-          'Profil',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        final isDark = themeProvider.isDarkMode;
+
+        return Scaffold(
+          backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.grey[50],
+          appBar: AppBar(
+            title: Text(
+              'Profil',
+              style: TextStyle(
+                color: isDark ? Colors.white : Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            backgroundColor: isDark 
+              ? const Color(0xFF2D2D2D) 
+              : const Color.fromRGBO(255, 193, 7, 1),
+            iconTheme: IconThemeData(
+              color: isDark ? Colors.white : Colors.black,
+            ),
+            elevation: isDark ? 0 : 2,
           ),
-        ),
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        iconTheme: const IconThemeData(color: Color.fromARGB(255, 0, 0, 0)),
-      ),
-      body: Container(
-        margin: const EdgeInsets.all(20),
-        padding: const EdgeInsets.all(30),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: const Color.fromARGB(255, 255, 255, 255), width: 3),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // FXSwift başlığı
-                  const Text(
-                    'FXSwift',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 50),
-
-                  // Kullanıcı adı alanı
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black, width: 2),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: TextFormField(
-                      controller: _usernameController,
-                      decoration: const InputDecoration(
-                        hintText: 'Kullanıcı Adı',
-                        hintStyle: TextStyle(color: Colors.black54),
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+          body: Container(
+            margin: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(30),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+              border: Border.all(
+                color: isDark ? const Color(0xFF404040) : Colors.grey.shade200,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: isDark 
+                    ? Colors.black.withOpacity(0.3)
+                    : Colors.grey.withOpacity(0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Center(
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // FXSwift başlığı
+                      Text(
+                        'FXSwift',
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : Colors.black,
+                        ),
                       ),
-                      style: const TextStyle(color: Colors.black),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Kullanıcı adı gerekli';
-                        }
-                        if (value.length < 3) {
-                          return 'Kullanıcı adı en az 3 karakter olmalı';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 20),
+                      const SizedBox(height: 50),
 
-                  // Şifre alanı
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black, width: 2),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: TextFormField(
-                      controller: _passwordController,
-                      obscureText: !_isPasswordVisible,
-                      decoration: InputDecoration(
-                        hintText: 'Şifre',
-                        hintStyle: const TextStyle(color: Colors.black54),
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                            color: Colors.black54,
+                      // Kullanıcı adı alanı
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: isDark ? const Color(0xFF525252) : Colors.black,
+                            width: 2,
                           ),
-                          onPressed: () {
-                            setState(() {
-                              _isPasswordVisible = !_isPasswordVisible;
-                            });
+                          borderRadius: BorderRadius.circular(8),
+                          color: isDark ? const Color(0xFF404040) : Colors.white,
+                        ),
+                        child: TextFormField(
+                          controller: _usernameController,
+                          decoration: InputDecoration(
+                            hintText: 'Kullanıcı Adı',
+                            hintStyle: TextStyle(
+                              color: isDark ? Colors.grey[400] : Colors.black54,
+                            ),
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 15,
+                              vertical: 15,
+                            ),
+                          ),
+                          style: TextStyle(
+                            color: isDark ? Colors.white : Colors.black,
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Kullanıcı adı gerekli';
+                            }
+                            if (value.length < 3) {
+                              return 'Kullanıcı adı en az 3 karakter olmalı';
+                            }
+                            return null;
                           },
                         ),
                       ),
-                      style: const TextStyle(color: Colors.black),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Şifre gerekli';
-                        }
-                        if (value.length < 6) {
-                          return 'Şifre en az 6 karakter olmalı';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 30),
+                      const SizedBox(height: 20),
 
-                  // Giriş Yap butonu
-                  Container(
-                    width: double.infinity,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.yellow,
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(color: Colors.black, width: 2),
-                    ),
-                    child: ElevatedButton(
-                      onPressed: _isLoading ? null : _login,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.yellow,
-                        foregroundColor: Colors.black,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
+                      // Şifre alanı
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: isDark ? const Color(0xFF525252) : Colors.black,
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                          color: isDark ? const Color(0xFF404040) : Colors.white,
                         ),
-                      ),
-                      child: _isLoading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-                              ),
-                            )
-                          : const Text(
-                              'GİRİŞ YAP',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
+                        child: TextFormField(
+                          controller: _passwordController,
+                          obscureText: !_isPasswordVisible,
+                          decoration: InputDecoration(
+                            hintText: 'Şifre',
+                            hintStyle: TextStyle(
+                              color: isDark ? Colors.grey[400] : Colors.black54,
                             ),
-                    ),
-                  ),
-                  const SizedBox(height: 15),
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 15,
+                              vertical: 15,
+                            ),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                color: isDark ? Colors.grey[400] : Colors.black54,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
+                            ),
+                          ),
+                          style: TextStyle(
+                            color: isDark ? Colors.white : Colors.black,
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Şifre gerekli';
+                            }
+                            if (value.length < 6) {
+                              return 'Şifre en az 6 karakter olmalı';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 30),
 
-                  // Kayıt Ol butonu
-                  Container(
-                    width: double.infinity,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(color: Colors.black, width: 2),
-                    ),
-                    child: ElevatedButton(
-                      onPressed: _isLoading ? null : _register,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.black,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
+                      // Giriş Yap butonu
+                      Container(
+                        width: double.infinity,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: isDark 
+                            ? const Color(0xFF6366F1) 
+                            : const Color.fromRGBO(255, 193, 7, 1),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: isDark ? const Color(0xFF5B21B6) : Colors.black,
+                            width: 2,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: (isDark 
+                                ? const Color(0xFF6366F1) 
+                                : const Color.fromRGBO(255, 193, 7, 1)).withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: ElevatedButton(
+                          onPressed: _isLoading ? null : _login,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: isDark 
+                              ? const Color(0xFF6366F1) 
+                              : const Color.fromRGBO(255, 193, 7, 1),
+                            foregroundColor: isDark ? Colors.white : Colors.black,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: _isLoading
+                              ? SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      isDark ? Colors.white : Colors.black,
+                                    ),
+                                  ),
+                                )
+                              : Text(
+                                  'GİRİŞ YAP',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: isDark ? Colors.white : Colors.black,
+                                  ),
+                                ),
                         ),
                       ),
-                      child: const Text(
-                        'KAYIT OL',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                      const SizedBox(height: 15),
+
+                      // Kayıt Ol butonu
+                      Container(
+                        width: double.infinity,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: isDark ? const Color(0xFF404040) : Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: isDark ? const Color(0xFF525252) : Colors.black,
+                            width: 2,
+                          ),
+                        ),
+                        child: ElevatedButton(
+                          onPressed: _isLoading ? null : _register,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: isDark ? const Color(0xFF404040) : Colors.white,
+                            foregroundColor: isDark ? Colors.white : Colors.black,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: Text(
+                            'KAYIT OL',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: isDark ? Colors.white : Colors.black,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -262,105 +330,217 @@ class UserProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-      appBar: AppBar(
-        title: const Text(
-          'Profil',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        iconTheme: const IconThemeData(color: Color.fromARGB(255, 0, 0, 0)),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout, color: Colors.black),
-            onPressed: () {
-              Navigator.of(context).popUntil((route) => route.isFirst);
-            },
-          ),
-        ],
-      ),
-      body: Container(
-        margin: const EdgeInsets.all(20),
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: const Color.fromARGB(255, 255, 255, 255), width: 3),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const CircleAvatar(
-                radius: 50,
-                backgroundColor: Colors.yellow,
-                child: Icon(
-                  Icons.person,
-                  size: 60,
-                  color: Colors.black,
-                ),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        final isDark = themeProvider.isDarkMode;
+
+        return Scaffold(
+          backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.grey[50],
+          appBar: AppBar(
+            title: Text(
+              'Profil',
+              style: TextStyle(
+                color: isDark ? Colors.white : Colors.black,
+                fontWeight: FontWeight.bold,
               ),
-              const SizedBox(height: 20),
-              Text(
-                'Hoş geldiniz!',
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+            ),
+            backgroundColor: isDark 
+              ? const Color(0xFF2D2D2D) 
+              : const Color.fromRGBO(255, 193, 7, 1),
+            iconTheme: IconThemeData(
+              color: isDark ? Colors.white : Colors.black,
+            ),
+            elevation: isDark ? 0 : 2,
+            actions: [
+              IconButton(
+                icon: Icon(
+                  Icons.logout,
+                  color: isDark ? Colors.white : Colors.black,
                 ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                username,
-                style: const TextStyle(
-                  fontSize: 20,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 30),
-              Container(
-                width: double.infinity,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.yellow,
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Profil düzenleme sayfasına git
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Profil düzenleme özelliği yakında eklenecek'),
-                        backgroundColor: Colors.blue,
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.yellow,
-                    foregroundColor: Colors.black,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                  ),
-                  child: const Text(
-                    'Profili Düzenle',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
+                onPressed: () {
+                  Navigator.of(context).popUntil((route) => route.isFirst);
+                },
               ),
             ],
           ),
-        ),
-      ),
+          body: Container(
+            margin: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+              border: Border.all(
+                color: isDark ? const Color(0xFF404040) : Colors.grey.shade200,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: isDark 
+                    ? Colors.black.withOpacity(0.3)
+                    : Colors.grey.withOpacity(0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: (isDark 
+                            ? const Color(0xFF6366F1) 
+                            : const Color.fromRGBO(255, 193, 7, 1)).withOpacity(0.3),
+                          blurRadius: 20,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundColor: isDark 
+                        ? const Color(0xFF6366F1) 
+                        : const Color.fromRGBO(255, 193, 7, 1),
+                      child: Icon(
+                        Icons.person,
+                        size: 60,
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Hoş geldiniz!',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: isDark ? Colors.white : Colors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: isDark 
+                        ? const Color(0xFF6366F1).withOpacity(0.2)
+                        : const Color.fromRGBO(255, 193, 7, 0.2),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: isDark 
+                          ? const Color(0xFF6366F1).withOpacity(0.3)
+                          : const Color.fromRGBO(255, 193, 7, 0.3),
+                      ),
+                    ),
+                    child: Text(
+                      username,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  Container(
+                    width: double.infinity,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: isDark 
+                          ? [const Color(0xFF6366F1), const Color(0xFF8B5CF6)]
+                          : [const Color.fromRGBO(255, 193, 7, 1), const Color.fromRGBO(255, 235, 59, 1)],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                      ),
+                      borderRadius: BorderRadius.circular(25),
+                      boxShadow: [
+                        BoxShadow(
+                          color: (isDark 
+                            ? const Color(0xFF6366F1) 
+                            : const Color.fromRGBO(255, 193, 7, 1)).withOpacity(0.4),
+                          blurRadius: 15,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Profil düzenleme sayfasına git
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Profil düzenleme özelliği yakında eklenecek'),
+                            backgroundColor: Colors.blue,
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        foregroundColor: isDark ? Colors.white : Colors.black,
+                        elevation: 0,
+                        shadowColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                      ),
+                      child: Text(
+                        'Profili Düzenle',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  // Ek bilgi kartı
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: isDark 
+                        ? const Color(0xFF404040).withOpacity(0.5)
+                        : Colors.grey.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: isDark 
+                          ? const Color(0xFF525252)
+                          : Colors.grey.shade200,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.info_outline,
+                          color: isDark 
+                            ? const Color(0xFF60A5FA)
+                            : const Color(0xFF3B82F6),
+                          size: 20,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'Profil düzenleme ve diğer özellikler yakında eklenecek.',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: isDark 
+                                ? Colors.grey[300]
+                                : Colors.grey[600],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
