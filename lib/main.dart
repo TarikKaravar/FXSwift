@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/core/routes.dart';
 import 'package:flutter_app/screens/loading_screen.dart';
-import 'package:flutter_app/screens/theme_provider.dart';
+import 'package:flutter_app/theme_provider.dart';
 import 'package:flutter_app/theme_provider.dart'; // BURASI ÖNEMLİ
 import 'package:provider/provider.dart'; // BURASI DA
 
@@ -13,6 +13,7 @@ void main() {
     ),
   );
 }
+
 class FXSwiftApp extends StatelessWidget {
   const FXSwiftApp({super.key});
 
@@ -21,7 +22,7 @@ class FXSwiftApp extends StatelessWidget {
     return MaterialApp(
       title: 'FXSwift',
       debugShowCheckedModeBanner: false,
-      home: const SplashWrapper(), // İlk önce Splash yüklenir
+      home: const SplashWrapper(),
     );
   }
 }
@@ -50,7 +51,7 @@ class _SplashWrapperState extends State<SplashWrapper> {
   Widget build(BuildContext context) {
     if (_showRouter) {
       return MaterialApp.router(
-        routerConfig: router,
+        routerConfig: router, // News route burada tanımlı
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.blue,
@@ -58,7 +59,7 @@ class _SplashWrapperState extends State<SplashWrapper> {
         ),
       );
     } else {
-      return const LoadingScreen();
+      return const LoadingScreen(); // Splash gösteriliyor
     }
   }
 }
