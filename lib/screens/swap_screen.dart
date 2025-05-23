@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../theme_provider.dart';
+import '../services/currency_service.dart';
 
 class CurrencyData {
   final String code;
@@ -24,7 +25,8 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
 
   final List<String> _tabs = ['DÖVİZ ÇEVİRİCİ'];
 
-  final List<CurrencyData> _currencies = [
+  // Default kurlar (API'den veri gelmezse kullanılacak)
+  List<CurrencyData> _currencies = [
     CurrencyData(code: 'USD', name: 'Amerikan Doları', rate: 38.76),
     CurrencyData(code: 'TRY', name: 'Türk Lirası', rate: 1.0),
     CurrencyData(code: 'EUR', name: 'Avrupa Eurosu', rate: 41.25),
@@ -40,11 +42,14 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
 
   bool _showingTRY = true;
   double _result = 38.76;
+  bool _isLoading = false;
+  String? _lastUpdated;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: _tabs.length, vsync: this);
+    _fetchLiveRates();
     _calculateResult();
   }
 
@@ -53,6 +58,70 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
     _tabController.dispose();
     _amountController.dispose();
     super.dispose();
+  }
+
+  Future<void> _fetchLiveRates() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final liveRates = await CurrencyService.fetchPopularRates("USD");
+      
+      if (!mounted) return;
+
+      setState(() {
+        // Live rate'leri currency listesine uygula
+        for (int i = 0; i < _currencies.length; i++) {
+          final currencyCode = _currencies[i].code;
+          
+          // TRY için özel işlem
+          if (currencyCode == 'TRY') {
+            continue; // TRY rate'i 1.0 olarak kalacak
+          }
+          
+          // API'den gelen rate'leri kullan
+          String rateKey = '';
+          if (currencyCode == 'USD') {
+            rateKey = 'USD/TRY';
+          } else if (currencyCode == 'EUR') {
+            rateKey = 'EUR/TRY';
+          } else if (currencyCode == 'GBP') {
+            rateKey = 'GBP/TRY';
+          } else if (currencyCode == 'JPY') {
+            rateKey = 'JPY/TRY';
+          } else if (currencyCode == 'CHF') {
+            rateKey = 'CHF/TRY';
+          } else if (currencyCode == 'CAD') {
+            rateKey = 'CAD/TRY';
+          } else if (currencyCode == 'AUD') {
+            rateKey = 'AUD/TRY';
+          }
+
+          if (rateKey.isNotEmpty && liveRates.containsKey(rateKey)) {
+            _currencies[i] = CurrencyData(
+              code: currencyCode,
+              name: _currencies[i].name,
+              rate: liveRates[rateKey]!,
+            );
+          }
+        }
+        
+        _lastUpdated = DateTime.now().toIso8601String();
+        _isLoading = false;
+      });
+      
+      _calculateResult();
+      
+    } catch (e) {
+      print('Kur verisi alınırken hata oluştu: $e');
+      if (!mounted) return;
+      
+      setState(() {
+        _isLoading = false;
+        _lastUpdated = DateTime.now().toIso8601String();
+      });
+    }
   }
 
   void _swapCurrencies() {
@@ -136,12 +205,26 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
                   itemBuilder: (context, index) {
                     return ListTile(
                       contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                      title: Text(
-                        _currencies[index].code,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: isDark ? Colors.white : Colors.black,
-                        ),
+                      title: Row(
+                        children: [
+                          Text(
+                            _currencies[index].code,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: isDark ? Colors.white : Colors.black,
+                            ),
+                          ),
+                          if (_currencies[index].code != 'TRY') ...[
+                            const SizedBox(width: 8),
+                            Text(
+                              '(${_currencies[index].rate.toStringAsFixed(4)})',
+                              style: TextStyle(
+                                color: isDark ? Colors.grey[400] : Colors.grey[600],
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                       subtitle: Text(
                         _currencies[index].name,
@@ -176,6 +259,13 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
     );
   }
 
+  String _formatTime(String datetime) {
+    final parsed = DateTime.parse(datetime).toLocal();
+    final hour = parsed.hour.toString().padLeft(2, '0');
+    final minute = parsed.minute.toString().padLeft(2, '0');
+    return '$hour:$minute';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
@@ -188,15 +278,63 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
             children: [
               Container(
                 color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
-                child: TabBar(
-                  controller: _tabController,
-                  tabs: _tabs.map((name) => Tab(text: name)).toList(),
-                  labelColor: isDark ? Colors.white : Colors.black,
-                  indicatorColor: isDark 
-                    ? const Color(0xFF6366F1) 
-                    : const Color.fromRGBO(255, 193, 7, 1),
-                  unselectedLabelColor: isDark ? Colors.grey[400] : Colors.grey,
-                  indicatorWeight: 3,
+                child: Column(
+                  children: [
+                    TabBar(
+                      controller: _tabController,
+                      tabs: _tabs.map((name) => Tab(text: name)).toList(),
+                      labelColor: isDark ? Colors.white : Colors.black,
+                      indicatorColor: isDark 
+                        ? const Color(0xFF6366F1) 
+                        : const Color.fromRGBO(255, 193, 7, 1),
+                      unselectedLabelColor: isDark ? Colors.grey[400] : Colors.grey,
+                      indicatorWeight: 3,
+                    ),
+                    // Güncelleme bilgisi ve yenile butonu
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            _lastUpdated != null
+                                ? "Son Güncelleme: ${_formatTime(_lastUpdated!)}"
+                                : "Henüz güncellenmedi",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: isDark ? Colors.grey[400] : Colors.grey[600],
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              if (_isLoading)
+                                SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      isDark ? const Color(0xFF6366F1) : const Color.fromRGBO(255, 193, 7, 1),
+                                    ),
+                                  ),
+                                ),
+                              const SizedBox(width: 8),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.refresh,
+                                  size: 20,
+                                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                                ),
+                                onPressed: _isLoading ? null : _fetchLiveRates,
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Expanded(
