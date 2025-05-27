@@ -92,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
               IconButton(
                 icon: Icon(
                   isDark ? Icons.light_mode : Icons.dark_mode,
-                  color: isDark ? Colors.white : Colors.black,
+                  color: isDark ? Colors.white : const Color.fromARGB(255, 255, 0, 0),
                 ),
                 onPressed: () {
                   themeProvider.toggleTheme(!isDark);
