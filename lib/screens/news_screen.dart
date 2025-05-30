@@ -22,6 +22,117 @@ class _NewsScreenState extends State<NewsScreen> {
     _futureNews = NewsService().fetchCurrencyNews();
   }
 
+  // URL açma fonksiyonu - Google'da arama veya direkt link açma
+  Future<void> _openUrl(String url, BuildContext context, bool isDark) async {
+    try {
+      // URL'yi düzenle ve kontrol et
+      String finalUrl = url;
+      
+      // Eğer URL geçerli değilse veya boşsa, Google'da arama yap
+      if (url.isEmpty || !url.startsWith('http')) {
+        // Haber başlığını kullanarak Google'da arama yap
+        finalUrl = 'https://www.google.com/search?q=${Uri.encodeComponent(url)}';
+        print("🔍 Google arama URL'si oluşturuluyor: $finalUrl");
+      } else {
+        print("🔗 Normal URL açılıyor: $finalUrl");
+      }
+
+      final Uri uri = Uri.parse(finalUrl);
+      
+      // URL'yi açmayı dene
+      bool launched = await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication, // Harici tarayıcıda aç
+      );
+
+      if (!launched) {
+        // İlk deneme başarısızsa, alternatif yöntem dene
+        launched = await launchUrl(
+          uri,
+          mode: LaunchMode.platformDefault,
+        );
+      }
+
+      if (!launched) {
+        // Hala açılamazsa Google aramaya yönlendir
+        final googleSearchUrl = 'https://www.google.com/search?q=${Uri.encodeComponent(url)}';
+        final googleUri = Uri.parse(googleSearchUrl);
+        
+        launched = await launchUrl(
+          googleUri,
+          mode: LaunchMode.externalApplication,
+        );
+      }
+
+      if (!launched && mounted) {
+        _showErrorSnackBar(context, isDark, "Link açılamıyor. Lütfen daha sonra tekrar deneyin.");
+      }
+
+    } catch (e) {
+      print("❌ URL açma hatası: $e");
+      
+      // Hata durumunda Google'da arama yap
+      try {
+        final googleSearchUrl = 'https://www.google.com/search?q=${Uri.encodeComponent(url)}';
+        final googleUri = Uri.parse(googleSearchUrl);
+        
+        bool launched = await launchUrl(
+          googleUri,
+          mode: LaunchMode.externalApplication,
+        );
+
+        if (!launched && mounted) {
+          _showErrorSnackBar(context, isDark, "Google araması da açılamıyor. İnternet bağlantınızı kontrol edin.");
+        }
+      } catch (e2) {
+        print("❌ Google arama hatası: $e2");
+        if (mounted) {
+          _showErrorSnackBar(context, isDark, "İnternet bağlantınızı kontrol edin.");
+        }
+      }
+    }
+  }
+
+  // Haber başlığı ile Google'da arama yapma fonksiyonu
+  Future<void> _searchOnGoogle(String title, BuildContext context, bool isDark) async {
+    try {
+      final searchQuery = Uri.encodeComponent("$title döviz haberi");
+      final googleUrl = 'https://www.google.com/search?q=$searchQuery';
+      final uri = Uri.parse(googleUrl);
+      
+      bool launched = await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
+
+      if (!launched && mounted) {
+        _showErrorSnackBar(context, isDark, "Google araması açılamıyor.");
+      }
+    } catch (e) {
+      print("❌ Google arama hatası: $e");
+      if (mounted) {
+        _showErrorSnackBar(context, isDark, "Arama yapılamıyor. İnternet bağlantınızı kontrol edin.");
+      }
+    }
+  }
+
+  // Hata mesajı gösterme fonksiyonu
+  void _showErrorSnackBar(BuildContext context, bool isDark, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isDark ? const Color(0xFFEF4444) : Colors.red,
+        action: SnackBarAction(
+          label: 'Tamam',
+          textColor: Colors.white,
+          onPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
@@ -221,20 +332,14 @@ class _NewsScreenState extends State<NewsScreen> {
                         child: InkWell(
                           borderRadius: BorderRadius.circular(12),
                           onTap: () async {
-                            final uri = Uri.parse(news.url);
-                            if (await canLaunchUrl(uri)) {
-                              await launchUrl(uri, mode: LaunchMode.externalApplication);
-                            } else {
-                              if (!mounted) return;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: const Text("Link açılamıyor."),
-                                  backgroundColor: isDark 
-                                    ? const Color(0xFFEF4444) 
-                                    : Colors.red,
-                                ),
-                              );
-                            }
+                            print("🔗 Haber tıklandı: ${news.title}");
+                            print("🔗 URL: ${news.url}");
+                            await _openUrl(news.url, context, isDark);
+                          },
+                          onLongPress: () async {
+                            // Uzun basıldığında Google'da arama yap
+                            print("🔍 Uzun basıldı - Google'da arama yapılıyor: ${news.title}");
+                            await _searchOnGoogle(news.title, context, isDark);
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(16),
@@ -300,35 +405,61 @@ class _NewsScreenState extends State<NewsScreen> {
                                         ],
                                       ),
                                     ),
-                                    Icon(
-                                      Icons.open_in_new,
-                                      color: isDark 
-                                        ? Colors.grey[400] 
-                                        : Colors.grey[600],
-                                      size: 20,
+                                    Column(
+                                      children: [
+                                        Icon(
+                                          Icons.open_in_new,
+                                          color: isDark 
+                                            ? Colors.grey[400] 
+                                            : Colors.grey[600],
+                                          size: 20,
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Icon(
+                                          Icons.search,
+                                          color: isDark 
+                                            ? Colors.grey[400] 
+                                            : Colors.grey[600],
+                                          size: 16,
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
                                 const SizedBox(height: 12),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Icon(
-                                      Icons.access_time,
-                                      size: 14,
-                                      color: isDark 
-                                        ? Colors.grey[400] 
-                                        : Colors.grey[600],
-                                    ),
-                                    const SizedBox(width: 4),
                                     Text(
-                                      "Şimdi",
+                                      "Tıkla: Link aç • Uzun bas: Google'da ara",
                                       style: TextStyle(
-                                        fontSize: 12,
+                                        fontSize: 10,
                                         color: isDark 
-                                          ? Colors.grey[400] 
-                                          : Colors.grey[600],
+                                          ? Colors.grey[500] 
+                                          : Colors.grey[500],
+                                        fontStyle: FontStyle.italic,
                                       ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.access_time,
+                                          size: 14,
+                                          color: isDark 
+                                            ? Colors.grey[400] 
+                                            : Colors.grey[600],
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          "Şimdi",
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: isDark 
+                                              ? Colors.grey[400] 
+                                              : Colors.grey[600],
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
