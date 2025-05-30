@@ -37,10 +37,10 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
     CurrencyData(code: 'AUD', name: 'Avustralya Doları', rate: 25.40),
   ];
 
-  int _fromCurrencyIndex = 0;
-  int _toCurrencyIndex = 0;
+  int _fromCurrencyIndex = 1; // TRY için index 1 (varsayılan olarak TRY seçili)
+  int _toCurrencyIndex = 0;   // USD için index 0 (varsayılan olarak USD seçili)
 
-  bool _showingTRY = true;
+  bool _showingTRY = false; // Artık sağ tarafta USD gösteriyoruz, TRY değil
   double _result = 38.76;
   bool _isLoading = false;
   String? _lastUpdated;
