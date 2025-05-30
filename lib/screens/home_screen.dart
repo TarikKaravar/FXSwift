@@ -89,15 +89,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 onPressed: fetchData,
               ),
-              IconButton(
-                icon: Icon(
-                  isDark ? Icons.light_mode : Icons.dark_mode,
-                  color: isDark ? Colors.white : const Color.fromARGB(255, 0, 0, 0),
-                ),
-                onPressed: () {
-                  themeProvider.toggleTheme(!isDark);
-                },
-              ),
               const SizedBox(width: 8),
             ],
             elevation: isDark ? 0 : 2,

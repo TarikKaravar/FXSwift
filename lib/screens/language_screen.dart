@@ -19,7 +19,6 @@ class _LanguageScreenState extends State<LanguageScreen> with TickerProviderStat
     {'name': 'Türkçe', 'code': 'TR', 'flag': '🇹🇷'},
     {'name': 'İngilizce', 'code': 'EN', 'flag': '🇺🇸'},
     {'name': 'Almanca', 'code': 'DE', 'flag': '🇩🇪'},
-    {'name': 'Arapça', 'code': 'AR', 'flag': '🇸🇦'},
   ];
 
   @override
