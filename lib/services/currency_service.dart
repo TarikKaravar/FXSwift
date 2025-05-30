@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class CurrencyService {
-  static const String _apiKey = 'YOUR_API_KEY'; // Buraya kendi API key'ini koy
+  static const String _apiKey = ''; // Buraya kendi API key'ini koy
 
   static Future<Map<String, double>> fetchPopularRates(String base) async {
     final url = Uri.parse(

@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/core/routes.dart';
 import 'package:flutter_app/screens/loading_screen.dart';
 import 'package:flutter_app/theme_provider.dart';
-import 'package:flutter_app/theme_provider.dart'; // BURASI ÖNEMLİ
-import 'package:provider/provider.dart'; // BURASI DA
+import 'package:flutter_app/localization_provider.dart'; // YENİ EKLENEN
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => ThemeProvider(),
+    MultiProvider( // ChangeNotifierProvider yerine MultiProvider kullan
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => LocalizationProvider()), // YENİ EKLENEN
+      ],
       child: const FXSwiftApp(),
     ),
   );
@@ -50,16 +53,21 @@ class _SplashWrapperState extends State<SplashWrapper> {
   @override
   Widget build(BuildContext context) {
     if (_showRouter) {
-      return MaterialApp.router(
-        routerConfig: router, // News route burada tanımlı
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          fontFamily: 'Roboto',
-        ),
+      return Consumer<ThemeProvider>( // ThemeProvider'ı dinle
+        builder: (context, themeProvider, child) {
+          return MaterialApp.router(
+            routerConfig: router,
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+              fontFamily: 'Roboto',
+              brightness: themeProvider.isDarkMode ? Brightness.dark : Brightness.light, // Tema desteği
+            ),
+          );
+        },
       );
     } else {
-      return const LoadingScreen(); // Splash gösteriliyor
+      return const LoadingScreen();
     }
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../theme_provider.dart';
+import '../localization_provider.dart'; // Yeni eklenen import
 
 class LanguageScreen extends StatefulWidget {
   const LanguageScreen({super.key});
@@ -13,12 +14,12 @@ class LanguageScreen extends StatefulWidget {
 class _LanguageScreenState extends State<LanguageScreen> with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
-  String selectedLanguage = 'Türkçe';
+  String selectedLanguageCode = 'tr'; // Dil kodunu takip ediyoruz
 
   final List<Map<String, String>> languages = [
-    {'name': 'Türkçe', 'code': 'TR', 'flag': '🇹🇷'},
-    {'name': 'İngilizce', 'code': 'EN', 'flag': '🇺🇸'},
-    {'name': 'Almanca', 'code': 'DE', 'flag': '🇩🇪'},
+    {'name_key': 'turkish', 'code': 'tr', 'flag': '🇹🇷'},
+    {'name_key': 'english', 'code': 'en', 'flag': '🇺🇸'},
+    {'name_key': 'german', 'code': 'de', 'flag': '🇩🇪'},
   ];
 
   @override
@@ -41,16 +42,10 @@ class _LanguageScreenState extends State<LanguageScreen> with TickerProviderStat
   // Kaydedilmiş dili yükle
   Future<void> _loadSelectedLanguage() async {
     final prefs = await SharedPreferences.getInstance();
-    final savedLanguage = prefs.getString('selected_language') ?? 'Türkçe';
+    final savedLanguageCode = prefs.getString('language_code') ?? 'tr';
     setState(() {
-      selectedLanguage = savedLanguage;
+      selectedLanguageCode = savedLanguageCode;
     });
-  }
-
-  // Seçilen dili kaydet
-  Future<void> _saveSelectedLanguage(String language) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('selected_language', language);
   }
 
   @override
@@ -59,13 +54,14 @@ class _LanguageScreenState extends State<LanguageScreen> with TickerProviderStat
     super.dispose();
   }
 
-  void _selectLanguage(String language) async {
+  void _selectLanguage(String languageCode, String languageName) async {
     setState(() {
-      selectedLanguage = language;
+      selectedLanguageCode = languageCode;
     });
     
-    // Dili kaydet
-    await _saveSelectedLanguage(language);
+    // LocalizationProvider'ı güncelle
+    final localizationProvider = Provider.of<LocalizationProvider>(context, listen: false);
+    await localizationProvider.changeLanguage(languageCode);
     
     _animationController.forward().then((_) {
       _animationController.reverse();
@@ -73,7 +69,7 @@ class _LanguageScreenState extends State<LanguageScreen> with TickerProviderStat
     
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('$language seçildi ve kaydedildi'),
+        content: Text('$languageName ${localizationProvider.t('language_selected')}'),
         duration: const Duration(seconds: 2),
         backgroundColor: const Color(0xFF6366F1),
       ),
@@ -82,15 +78,16 @@ class _LanguageScreenState extends State<LanguageScreen> with TickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(
-      builder: (context, themeProvider, child) {
+    return Consumer2<ThemeProvider, LocalizationProvider>(
+      builder: (context, themeProvider, localizationProvider, child) {
         final isDark = themeProvider.isDarkMode;
+        final loc = localizationProvider; // Kısaltma için
 
         return Scaffold(
           backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.grey[50],
           appBar: AppBar(
             title: Text(
-              'Dil Seçenekleri',
+              loc.t('language_options'), // Çeviri eklendi
               style: TextStyle(
                 color: isDark ? Colors.white : Colors.black,
                 fontWeight: FontWeight.bold,
@@ -145,7 +142,7 @@ class _LanguageScreenState extends State<LanguageScreen> with TickerProviderStat
                 ),
                 const SizedBox(height: 30),
                 Text(
-                  'Dil Ayarları',
+                  loc.t('language_settings'), // Çeviri eklendi
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -154,7 +151,7 @@ class _LanguageScreenState extends State<LanguageScreen> with TickerProviderStat
                 ),
                 const SizedBox(height: 15),
                 Text(
-                  'Uygulama dilini aşağıdaki seçeneklerden birini seçerek değiştirebilirsiniz.\nBu ayar tüm uygulama sayfalarında geçerli olacaktır.',
+                  loc.t('language_description'), // Çeviri eklendi
                   style: TextStyle(
                     fontSize: 16,
                     color: isDark ? Colors.grey[300] : Colors.black54,
@@ -166,13 +163,15 @@ class _LanguageScreenState extends State<LanguageScreen> with TickerProviderStat
                 
                 // Dil seçenekleri
                 ...languages.map((language) {
-                  final isSelected = selectedLanguage == language['name'];
+                  final isSelected = selectedLanguageCode == language['code'];
+                  final languageName = loc.t(language['name_key']!); // Çeviri kullanıyoruz
+                  
                   return Container(
                     margin: const EdgeInsets.only(bottom: 16),
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        onTap: () => _selectLanguage(language['name']!),
+                        onTap: () => _selectLanguage(language['code']!, languageName),
                         borderRadius: BorderRadius.circular(12),
                         child: Container(
                           padding: const EdgeInsets.all(16),
@@ -221,7 +220,7 @@ class _LanguageScreenState extends State<LanguageScreen> with TickerProviderStat
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      language['name']!,
+                                      languageName, // Çevrilmiş dil adı
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.w600,
@@ -233,7 +232,7 @@ class _LanguageScreenState extends State<LanguageScreen> with TickerProviderStat
                                       ),
                                     ),
                                     Text(
-                                      language['code']!,
+                                      language['code']!.toUpperCase(),
                                       style: TextStyle(
                                         fontSize: 14,
                                         color: isDark ? Colors.grey[300] : Colors.grey[600],
@@ -265,8 +264,6 @@ class _LanguageScreenState extends State<LanguageScreen> with TickerProviderStat
                     ),
                   );
                 }).toList(),
-                
-
               ],
             ),
           ),

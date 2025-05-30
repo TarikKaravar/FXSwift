@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../theme_provider.dart';
+import '../localization_provider.dart'; // Yeni eklenen import
 import 'profile_screen.dart';
 import 'theme_screen.dart';
 import 'language_screen.dart';
@@ -10,9 +11,10 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(
-      builder: (context, themeProvider, child) {
+    return Consumer2<ThemeProvider, LocalizationProvider>(
+      builder: (context, themeProvider, localizationProvider, child) {
         final isDark = themeProvider.isDarkMode;
+        final loc = localizationProvider; // Kısaltma için
         
         return Scaffold(
           backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.grey[50],
@@ -78,7 +80,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Döviz Çevirici',
+                      loc.t('currency_converter'), // Çeviri eklendi
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -116,7 +118,7 @@ class SettingsScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Ayarlar',
+                        loc.t('settings'), // Çeviri eklendi
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -125,7 +127,7 @@ class SettingsScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Uygulama tercihlerinizi buradan yönetebilirsiniz',
+                        loc.t('settings_description'), // Çeviri eklendi
                         style: TextStyle(
                           fontSize: 14,
                           color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -136,7 +138,7 @@ class SettingsScreen extends StatelessWidget {
                       
                       _buildSettingsButton(
                         context,
-                        'Profil',
+                        loc.t('profile'), // Çeviri eklendi
                         Icons.person_outline,
                         () => _navigateToProfile(context),
                         isDark,
@@ -145,7 +147,7 @@ class SettingsScreen extends StatelessWidget {
                       
                       _buildSettingsButton(
                         context,
-                        'Uygulama Teması',
+                        loc.t('app_theme'), // Çeviri eklendi
                         isDark ? Icons.nightlight_round : Icons.wb_sunny,
                         () => _navigateToTheme(context),
                         isDark,
@@ -154,7 +156,7 @@ class SettingsScreen extends StatelessWidget {
                       
                       _buildSettingsButton(
                         context,
-                        'Dil Seçenekleri',
+                        loc.t('language_options'), // Çeviri eklendi
                         Icons.language_outlined,
                         () => _navigateToLanguage(context),
                         isDark,
@@ -168,7 +170,7 @@ class SettingsScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: Text(
-                  'Sürüm 1.0.0',
+                  loc.t('version'), // Çeviri eklendi
                   style: TextStyle(
                     fontSize: 12,
                     color: isDark ? Colors.grey[500] : Colors.grey[500],
