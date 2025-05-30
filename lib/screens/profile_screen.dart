@@ -27,7 +27,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _loadSavedCredentials();
+    _checkLoginStatus(); // Uygulama açıldığında oturum durumunu kontrol et
     _passwordController.addListener(_checkPasswordStrength);
   }
 
@@ -38,13 +38,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.dispose();
   }
 
-  // Kaydedilmiş bilgileri yükle
-  void _loadSavedCredentials() async {
+  // Oturum durumunu kontrol et ve gerekirse yönlendir
+  void _checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
+    final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
     final savedUsername = prefs.getString('saved_username');
     final rememberMe = prefs.getBool('remember_me') ?? false;
 
-    if (rememberMe && savedUsername != null) {
+    if (isLoggedIn && savedUsername != null) {
+      // Kullanıcı zaten giriş yapmışsa, doğrudan profil ekranına yönlendir
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => UserProfileScreen(username: savedUsername),
+          ),
+        );
+      }
+    } else if (rememberMe && savedUsername != null) {
       setState(() {
         _usernameController.text = savedUsername;
         _rememberMe = true;
@@ -63,6 +74,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       await prefs.remove('saved_username');
       await prefs.setBool('remember_me', false);
     }
+
+    // Oturum durumunu kaydet
+    await prefs.setBool('isLoggedIn', true);
   }
 
   // Şifre gücünü kontrol et
@@ -88,7 +102,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       strengthText = 'Orta';
       strengthColor = Colors.yellow[700]!;
     } else {
-      // Güçlü şifre kontrolü
       bool hasUppercase = password.contains(RegExp(r'[A-Z]'));
       bool hasLowercase = password.contains(RegExp(r'[a-z]'));
       bool hasDigits = password.contains(RegExp(r'[0-9]'));
@@ -117,42 +130,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _login() async {
-  if (_formKey.currentState!.validate()) {
-    setState(() {
-      _isLoading = true;
-    });
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
 
-    // Bilgileri kaydet (await kaldırıldı)
-    _saveCredentials();
+      // Bilgileri kaydet
+      _saveCredentials();
 
-    // Giriş işlemi simülasyonu (2 saniye bekleme)
-    await Future.delayed(const Duration(seconds: 2));
+      // Giriş işlemi simülasyonu (2 saniye bekleme)
+      await Future.delayed(const Duration(seconds: 2));
 
-    setState(() {
-      _isLoading = false;
-    });
+      setState(() {
+        _isLoading = false;
+      });
 
-    // Başarılı giriş mesajı
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Hoş geldiniz, ${_usernameController.text}!'),
-          backgroundColor: Colors.green,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      // Başarılı giriş mesajı
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Hoş geldiniz, ${_usernameController.text}!'),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 2),
+          ),
+        );
 
-      // Ana profil ekranına yönlendir
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => UserProfileScreen(username: _usernameController.text),
-        ),
-      );
+        // Ana profil ekranına yönlendir
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => UserProfileScreen(username: _usernameController.text),
+          ),
+        );
+      }
     }
   }
-}
-
 
   void _register() {
     // Kayıt ol işlevi
@@ -527,6 +539,22 @@ class UserProfileScreen extends StatelessWidget {
 
   const UserProfileScreen({super.key, required this.username});
 
+  // Çıkış yapma işlemi
+  void _logout(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('isLoggedIn');
+    await prefs.remove('saved_username');
+    await prefs.setBool('remember_me', false);
+
+    // Giriş ekranına geri dön
+    if (context.mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const ProfileScreen()),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
@@ -556,9 +584,7 @@ class UserProfileScreen extends StatelessWidget {
                   Icons.logout,
                   color: isDark ? Colors.white : Colors.black,
                 ),
-                onPressed: () {
-                  Navigator.of(context).popUntil((route) => route.isFirst);
-                },
+                onPressed: () => _logout(context), // Çıkış yapma işlevini çağır
               ),
             ],
           ),
