@@ -17,7 +17,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _isPasswordVisible = false;
   bool _isLoading = false;
-  bool _rememberMe = false;
   
   // Şifre güvenliği değişkenleri
   double _passwordStrength = 0.0;
@@ -43,7 +42,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final prefs = await SharedPreferences.getInstance();
     final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
     final savedUsername = prefs.getString('saved_username');
-    final rememberMe = prefs.getBool('remember_me') ?? false;
 
     if (isLoggedIn && savedUsername != null) {
       // Kullanıcı zaten giriş yapmışsa, doğrudan profil ekranına yönlendir
@@ -55,28 +53,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         );
       }
-    } else if (rememberMe && savedUsername != null) {
-      setState(() {
-        _usernameController.text = savedUsername;
-        _rememberMe = true;
-      });
     }
   }
 
-  // Bilgileri kaydet veya temizle
-  void _saveCredentials() async {
+  // Bilgileri kaydet (kayıt işlemi için)
+  void _saveCredentials({required bool isRegistration}) async {
     final prefs = await SharedPreferences.getInstance();
-    
-    if (_rememberMe) {
-      await prefs.setString('saved_username', _usernameController.text);
-      await prefs.setBool('remember_me', true);
+    if (isRegistration) {
+      await prefs.setString('registered_username', _usernameController.text);
+      await prefs.setString('registered_password', _passwordController.text);
     } else {
-      await prefs.remove('saved_username');
-      await prefs.setBool('remember_me', false);
+      await prefs.setString('saved_username', _usernameController.text);
+      await prefs.setBool('isLoggedIn', true);
     }
-
-    // Oturum durumunu kaydet
-    await prefs.setBool('isLoggedIn', true);
   }
 
   // Şifre gücünü kontrol et
@@ -135,45 +124,97 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _isLoading = true;
       });
 
-      // Bilgileri kaydet
-      _saveCredentials();
+      final prefs = await SharedPreferences.getInstance();
+      final registeredUsername = prefs.getString('registered_username');
+      final registeredPassword = prefs.getString('registered_password');
 
-      // Giriş işlemi simülasyonu (2 saniye bekleme)
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (registeredUsername == null || registeredPassword == null) {
+        // Kayıtlı kullanıcı yoksa
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Lütfen önce kayıt olun!'),
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+        return;
+      }
+
+      if (registeredUsername == _usernameController.text && 
+          registeredPassword == _passwordController.text) {
+        // Bilgileri kaydet
+        _saveCredentials(isRegistration: false);
+
+        // Başarılı giriş mesajı
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Hoş geldiniz, ${_usernameController.text}!'),
+              backgroundColor: Colors.green,
+              duration: const Duration(seconds: 2),
+            ),
+          );
+
+          // Ana profil ekranına yönlendir
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => UserProfileScreen(username: _usernameController.text),
+            ),
+          );
+        }
+      } else {
+        // Hatalı kullanıcı adı veya şifre
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Kullanıcı adı veya şifre hatalı!'),
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+    }
+  }
+
+  void _register() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      // Bilgileri kaydet (kayıt işlemi)
+      _saveCredentials(isRegistration: true);
+
+      // Kayıt işlemi simülasyonu (2 saniye bekleme)
       await Future.delayed(const Duration(seconds: 2));
 
       setState(() {
         _isLoading = false;
       });
 
-      // Başarılı giriş mesajı
+      // Başarılı kayıt mesajı
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Hoş geldiniz, ${_usernameController.text}!'),
+            content: Text('Kayıt başarılı, ${_usernameController.text}! Lütfen giriş yapın.'),
             backgroundColor: Colors.green,
             duration: const Duration(seconds: 2),
           ),
         );
 
-        // Ana profil ekranına yönlendir
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => UserProfileScreen(username: _usernameController.text),
-          ),
-        );
+        // Formu sıfırla
+        _usernameController.clear();
+        _passwordController.clear();
       }
     }
-  }
-
-  void _register() {
-    // Kayıt ol işlevi
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Kayıt işlemi henüz mevcut değil'),
-        backgroundColor: Colors.orange,
-      ),
-    );
   }
 
   @override
@@ -386,48 +427,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ),
                       ],
-                      const SizedBox(height: 20),
-
-                      // Beni Hatırla seçeneği
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: isDark ? const Color(0xFF525252) : Colors.grey.shade300,
-                            width: 1,
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                          color: isDark 
-                            ? const Color(0xFF404040).withOpacity(0.3)
-                            : Colors.grey[50],
-                        ),
-                        child: CheckboxListTile(
-                          title: Text(
-                            'Beni Hatırla',
-                            style: TextStyle(
-                              color: isDark ? Colors.white : Colors.black,
-                              fontSize: 14,
-                            ),
-                          ),
-                          subtitle: Text(
-                            'Kullanıcı adınız kaydedilir',
-                            style: TextStyle(
-                              color: isDark ? Colors.grey[400] : Colors.grey[600],
-                              fontSize: 12,
-                            ),
-                          ),
-                          value: _rememberMe,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              _rememberMe = value ?? false;
-                            });
-                          },
-                          activeColor: isDark 
-                            ? const Color(0xFF6366F1) 
-                            : const Color.fromRGBO(255, 193, 7, 1),
-                          checkColor: isDark ? Colors.white : Colors.black,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                        ),
-                      ),
                       const SizedBox(height: 30),
 
                       // Giriş Yap butonu
@@ -544,7 +543,6 @@ class UserProfileScreen extends StatelessWidget {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('isLoggedIn');
     await prefs.remove('saved_username');
-    await prefs.setBool('remember_me', false);
 
     // Giriş ekranına geri dön
     if (context.mounted) {

@@ -18,6 +18,7 @@ class _NewsScreenState extends State<NewsScreen> {
   @override
   void initState() {
     super.initState();
+    print("📰 NewsScreen initState çağrıldı!");
     _futureNews = NewsService().fetchCurrencyNews();
   }
 
@@ -58,6 +59,7 @@ class _NewsScreenState extends State<NewsScreen> {
                 );
               }
               if (snapshot.hasError) {
+                print("❌ Hata: ${snapshot.error}");
                 return Center(
                   child: Container(
                     margin: const EdgeInsets.all(20),
@@ -110,6 +112,7 @@ class _NewsScreenState extends State<NewsScreen> {
                         ElevatedButton(
                           onPressed: () {
                             setState(() {
+                              print("🔄 Tekrar deneme başlatılıyor...");
                               _futureNews = NewsService().fetchCurrencyNews();
                             });
                           },
@@ -186,6 +189,7 @@ class _NewsScreenState extends State<NewsScreen> {
                   : const Color.fromRGBO(255, 193, 7, 1),
                 onRefresh: () async {
                   setState(() {
+                    print("🔄 Yenileme başlatılıyor...");
                     _futureNews = NewsService().fetchCurrencyNews();
                   });
                 },
@@ -216,12 +220,6 @@ class _NewsScreenState extends State<NewsScreen> {
                         color: Colors.transparent,
                         child: InkWell(
                           borderRadius: BorderRadius.circular(12),
-                          splashColor: isDark 
-                            ? Colors.white.withOpacity(0.1) 
-                            : Colors.grey.withOpacity(0.1),
-                          highlightColor: isDark 
-                            ? Colors.white.withOpacity(0.05) 
-                            : Colors.grey.withOpacity(0.05),
                           onTap: () async {
                             final uri = Uri.parse(news.url);
                             if (await canLaunchUrl(uri)) {
