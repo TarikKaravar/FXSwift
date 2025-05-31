@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/theme_provider.dart';
+import 'package:flutter_app/localization_provider.dart'; // LocalizationProvider'ı import et.
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'theme_provider.dart';
 
 class BottomMenu extends StatelessWidget {
   const BottomMenu({super.key});
@@ -37,6 +37,7 @@ class BottomMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     final selectedIndex = _calculateSelectedIndex(context);
     final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
+    final loc = Provider.of<LocalizationProvider>(context);
 
     return BottomNavigationBar(
       currentIndex: selectedIndex,
@@ -45,22 +46,22 @@ class BottomMenu extends StatelessWidget {
       unselectedItemColor: isDark ? Colors.grey[400] : Colors.grey[600],
       backgroundColor: isDark ? const Color(0xFF2D2D2D) : Colors.white,
       type: BottomNavigationBarType.fixed,
-      items: const [
+      items: [
         BottomNavigationBarItem(
-          icon: Icon(Icons.money),
-          label: "Döviz",
+          icon: const Icon(Icons.money),
+          label: loc.t('currency_converter_tab'),  // 💡 Dinamik çeviri
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.swap_horiz),
-          label: "Çevirici",
+          icon: const Icon(Icons.swap_horiz),
+          label: loc.t('currency_converter'),
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.article),
-          label: "Haberler",
+          icon: const Icon(Icons.article),
+          label: loc.t('News') ?? 'Haberler', // 'news' yoksa fallback
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.settings),
-          label: "Ayarlar",
+          icon: const Icon(Icons.settings),
+          label: loc.t('settings'),
         ),
       ],
     );
