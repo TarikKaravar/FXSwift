@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../theme_provider.dart';
+import '../localization_provider.dart'; // Added import for localization
 
 class ThemeScreen extends StatefulWidget {
   const ThemeScreen({super.key});
@@ -55,23 +56,24 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(
-      builder: (context, themeProvider, child) {
+    return Consumer2<ThemeProvider, LocalizationProvider>(
+      builder: (context, themeProvider, localizationProvider, child) {
         final isDark = themeProvider.isDarkMode;
+        final loc = localizationProvider; // Shortcut for localization
 
         return Scaffold(
           backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.grey[50],
           appBar: AppBar(
             title: Text(
-              'Uygulama Teması',
+              loc.t('theme_screen_title'), // Updated to use translation
               style: TextStyle(
                 color: isDark ? Colors.white : Colors.black,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            backgroundColor: isDark 
-              ? const Color(0xFF2D2D2D) 
-              : const Color.fromRGBO(255, 193, 7, 1),
+            backgroundColor: isDark
+                ? const Color(0xFF2D2D2D)
+                : const Color.fromRGBO(255, 193, 7, 1),
             iconTheme: IconThemeData(
               color: isDark ? Colors.white : Colors.black,
             ),
@@ -89,9 +91,9 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: isDark 
-                    ? Colors.black.withOpacity(0.3)
-                    : Colors.grey.withOpacity(0.1),
+                  color: isDark
+                      ? Colors.black.withOpacity(0.3)
+                      : Colors.grey.withOpacity(0.1),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -109,16 +111,16 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
                         child: Icon(
                           isDark ? Icons.nightlight_round : Icons.wb_sunny,
                           size: 80,
-                          color: isDark 
-                            ? const Color(0xFF6366F1) 
-                            : const Color(0xFFF59E0B),
+                          color: isDark
+                              ? const Color(0xFF6366F1)
+                              : const Color(0xFFF59E0B),
                         ),
                       );
                     },
                   ),
                   const SizedBox(height: 30),
                   Text(
-                    'Tema Ayarları',
+                    loc.t('theme_settings'), // Updated to use translation
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -127,7 +129,7 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
                   ),
                   const SizedBox(height: 15),
                   Text(
-                    'Uygulama temasını aşağıdaki düğme ile değiştirebilirsiniz.\nBu ayar tüm uygulama sayfalarında geçerli olacaktır.',
+                    loc.t('theme_txt'), // Updated to use translation
                     style: TextStyle(
                       fontSize: 16,
                       color: isDark ? Colors.grey[300] : Colors.black54,
@@ -153,16 +155,16 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
                             Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: isDark 
-                                  ? const Color(0xFF6366F1).withOpacity(0.2)
-                                  : const Color(0xFFF59E0B).withOpacity(0.2),
+                                color: isDark
+                                    ? const Color(0xFF6366F1).withOpacity(0.2)
+                                    : const Color(0xFFF59E0B).withOpacity(0.2),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Icon(
                                 isDark ? Icons.nightlight_round : Icons.wb_sunny,
-                                color: isDark 
-                                  ? const Color(0xFF6366F1)
-                                  : const Color(0xFFF59E0B),
+                                color: isDark
+                                    ? const Color(0xFF6366F1)
+                                    : const Color(0xFFF59E0B),
                                 size: 24,
                               ),
                             ),
@@ -171,7 +173,7 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Karanlık Mod',
+                                  loc.t('dark_mode'), // Updated to use translation
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
@@ -179,7 +181,7 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
                                   ),
                                 ),
                                 Text(
-                                  isDark ? 'Açık' : 'Kapalı',
+                                  loc.t(isDark ? 'on' : 'off'), // Updated to use translation
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: isDark ? Colors.grey[300] : Colors.grey[600],
@@ -199,9 +201,9 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
                             height: 30,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
-                              color: isDark 
-                                ? const Color(0xFF6366F1)
-                                : Colors.grey[300],
+                              color: isDark
+                                  ? const Color(0xFF6366F1)
+                                  : Colors.grey[300],
                             ),
                             child: Stack(
                               children: [
@@ -227,9 +229,9 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
                                     child: Icon(
                                       isDark ? Icons.nightlight_round : Icons.wb_sunny,
                                       size: 16,
-                                      color: isDark 
-                                        ? const Color(0xFF6366F1)
-                                        : const Color(0xFFF59E0B),
+                                      color: isDark
+                                          ? const Color(0xFF6366F1)
+                                          : const Color(0xFFF59E0B),
                                     ),
                                   ),
                                 ),
@@ -244,34 +246,34 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: isDark 
-                        ? const Color(0xFF1E40AF).withOpacity(0.1)
-                        : const Color(0xFF3B82F6).withOpacity(0.1),
+                      color: isDark
+                          ? const Color(0xFF1E40AF).withOpacity(0.1)
+                          : const Color(0xFF3B82F6).withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: isDark 
-                          ? const Color(0xFF1E40AF).withOpacity(0.3)
-                          : const Color(0xFF3B82F6).withOpacity(0.3),
+                        color: isDark
+                            ? const Color(0xFF1E40AF).withOpacity(0.3)
+                            : const Color(0xFF3B82F6).withOpacity(0.3),
                       ),
                     ),
                     child: Row(
                       children: [
                         Icon(
                           Icons.info_outline,
-                          color: isDark 
-                            ? const Color(0xFF60A5FA)
-                            : const Color(0xFF3B82F6),
+                          color: isDark
+                              ? const Color(0xFF60A5FA)
+                              : const Color(0xFF3B82F6),
                           size: 20,
                         ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            'Tema tercihiniz otomatik olarak kaydedilir ve tüm sayfalarda uygulanır.',
+                            loc.t('theme_txt2'), // Updated to use translation
                             style: TextStyle(
                               fontSize: 14,
-                              color: isDark 
-                                ? const Color(0xFF60A5FA)
-                                : const Color(0xFF3B82F6),
+                              color: isDark
+                                  ? const Color(0xFF60A5FA)
+                                  : const Color(0xFF3B82F6),
                             ),
                           ),
                         ),
@@ -279,7 +281,7 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Örnek gösterim alanı
+                  // Example currency card
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
@@ -292,7 +294,7 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
                     child: Column(
                       children: [
                         Text(
-                          'Örnek Döviz Kartı',
+                          loc.t('example_txt'), // Updated to use translation
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
@@ -319,9 +321,9 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
                             Text(
                               '%1.25',
                               style: TextStyle(
-                                color: isDark 
-                                  ? const Color(0xFF10B981) 
-                                  : Colors.green,
+                                color: isDark
+                                    ? const Color(0xFF10B981)
+                                    : Colors.green,
                               ),
                             ),
                           ],

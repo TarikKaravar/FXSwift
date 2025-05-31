@@ -46,7 +46,22 @@ class LocalizationProvider extends ChangeNotifier {
       'cad': 'Kanada Doları',
       'aud': 'Avustralya Doları',
       'namekey': 'ASDASDASD',
-
+      // HomeScreen translations
+      'popular_rates': 'Popüler Kurlar',
+      'updating': 'Güncelleniyor...',
+      'currency_unit': 'Birim',
+      'buy_rate': 'Alış',
+      'sell_rate': 'Satış',
+      // Currency names for HomeScreen
+      'usd_try': 'Amerikan Doları',
+      'eur_try': 'Euro',
+      'usd_eur': 'EUR/USD',
+      'gbp_try': 'İngiliz Sterlini',
+      'chf_try': 'İsviçre Frangı',
+      'aud_try': 'Avustralya Doları',
+      'cad_try': 'Kanada Doları',
+      'sar_try': 'Suudi Arabistan Riyali',
+      'jpy_try': 'Japon Yeni',
     },
     'en': {
       'settings': 'Settings',
@@ -63,7 +78,7 @@ class LocalizationProvider extends ChangeNotifier {
       'english': 'English',
       'german': 'German',
       'app_themee': 'App Theme',
-      'theme_settings': 'Theme Setting',
+      'theme_settings': 'Theme Settings',
       'theme_txt': 'You can change the app theme with the button below. This setting will apply to all app pages.',
       'dark_mode': 'Dark Mode',
       'off': 'Off',
@@ -86,7 +101,22 @@ class LocalizationProvider extends ChangeNotifier {
       'cad': 'Canadian Dollar',
       'aud': 'Australian Dollar',
       'namekey': 'ASDASDASD',
-
+      // HomeScreen translations
+      'popular_rates': 'Popular Rates',
+      'updating': 'Updating...',
+      'currency_unit': 'Unit',
+      'buy_rate': 'Buy',
+      'sell_rate': 'Sell',
+      // Currency names for HomeScreen
+      'usd_try': 'US Dollar',
+      'eur_try': 'Euro',
+      'usd_eur': 'EUR/USD',
+      'gbp_try': 'British Pound',
+      'chf_try': 'Swiss Franc',
+      'aud_try': 'Australian Dollar',
+      'cad_try': 'Canadian Dollar',
+      'sar_try': 'Saudi Riyal',
+      'jpy_try': 'Japanese Yen',
     },
     'de': {
       'settings': 'Einstellungen',
@@ -125,8 +155,22 @@ class LocalizationProvider extends ChangeNotifier {
       'chf': 'Schweizer Franken',
       'cad': 'Kanadischer Dollar',
       'aud': 'Australischer Dollar',
-      'namekey': 'ASDASDASD',
-
+      // HomeScreen translations
+      'popular_rates': 'Beliebte Kurse',
+      'updating': 'Wird aktualisiert...',
+      'currency_unit': 'Einheit',
+      'buy_rate': 'Kauf',
+      'sell_rate': 'Verkauf',
+      // Currency names for HomeScreen
+      'usd_try': 'US-Dollar',
+      'eur_try': 'Euro',
+      'usd_eur': 'EUR/USD',
+      'gbp_try': 'Britisches Pfund',
+      'chf_try': 'Schweizer Franken',
+      'aud_try': 'Australischer Dollar',
+      'cad_try': 'Kanadischer Dollar',
+      'sar_try': 'Saudi-Riyal',
+      'jpy_try': 'Japanischer Yen',
     },
   };
   

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../services/currency_service.dart';
 import 'package:go_router/go_router.dart';
 import '../theme_provider.dart';
+import '../localization_provider.dart'; // Localization provider eklendi
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,16 +17,29 @@ class _HomeScreenState extends State<HomeScreen> {
   Map<String, double> popularChanges = {};
   String? lastUpdated;
 
+  // Döviz adları artık localization provider'dan gelecek
+  Map<String, String> allCurrencyCodes = {
+    "USD/TRY": "usd_try",
+    "EUR/TRY": "eur_try", 
+    "USD/EUR": "usd_eur",
+    "GBP/TRY": "gbp_try",
+    "CHF/TRY": "chf_try",
+    "AUD/TRY": "aud_try",
+    "CAD/TRY": "cad_try",
+    "SAR/TRY": "sar_try", 
+    "JPY/TRY": "jpy_try",
+  };
+
   Map<String, Map<String, dynamic>> allCurrencies = {
-    "USD/TRY": {"name": "Amerikan Doları", "buy": 38.734, "sell": 38.801, "change": -0.05},
-    "EUR/TRY": {"name": "Euro", "buy": 42.794, "sell": 42.968, "change": -1.51},
-    "USD/EUR": {"name": "EUR/USD", "buy": 1.1048, "sell": 1.1074, "change": -1.46},
-    "GBP/TRY": {"name": "İngiliz Sterlini", "buy": 50.707, "sell": 51.012, "change": -1.00},
-    "CHF/TRY": {"name": "İsviçre Frangı", "buy": 45.330, "sell": 45.821, "change": -1.75},
-    "AUD/TRY": {"name": "Avustralya Doları", "buy": 23.868, "sell": 24.616, "change": -0.78},
-    "CAD/TRY": {"name": "Kanada Doları", "buy": 27.157, "sell": 27.923, "change": -0.58},
-    "SAR/TRY": {"name": "Suudi Arabistan Riyali", "buy": 10.180, "sell": 10.487, "change": -0.05},
-    "JPY/TRY": {"name": "Japon Yeni", "buy": 0.257, "sell": 0.261, "change": -2.21},
+    "USD/TRY": {"buy": 38.734, "sell": 38.801, "change": -0.05},
+    "EUR/TRY": {"buy": 42.794, "sell": 42.968, "change": -1.51},
+    "USD/EUR": {"buy": 1.1048, "sell": 1.1074, "change": -1.46},
+    "GBP/TRY": {"buy": 50.707, "sell": 51.012, "change": -1.00},
+    "CHF/TRY": {"buy": 45.330, "sell": 45.821, "change": -1.75},
+    "AUD/TRY": {"buy": 23.868, "sell": 24.616, "change": -0.78},
+    "CAD/TRY": {"buy": 27.157, "sell": 27.923, "change": -0.58},
+    "SAR/TRY": {"buy": 10.180, "sell": 10.487, "change": -0.05},
+    "JPY/TRY": {"buy": 0.257, "sell": 0.261, "change": -2.21},
   };
 
   @override
@@ -64,9 +78,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(
-      builder: (context, themeProvider, child) {
+    return Consumer2<ThemeProvider, LocalizationProvider>(
+      builder: (context, themeProvider, localizationProvider, child) {
         final isDark = themeProvider.isDarkMode;
+        final loc = localizationProvider; // Kısaltma için
         
         return Scaffold(
           backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.grey[50],
@@ -100,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    "Popüler Kurlar",
+                    loc.t('popular_rates'), // Çeviri eklendi
                     style: TextStyle(
                       fontSize: 20, 
                       fontWeight: FontWeight.bold,
@@ -159,8 +174,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         alignment: Alignment.centerRight,
                         child: Text(
                           lastUpdated != null
-                              ? "Son Güncelleme: ${formatTime(lastUpdated!)}"
-                              : "Güncelleniyor...",
+                              ? "${loc.t('last_updated')}${formatTime(lastUpdated!)}" // Çeviri eklendi
+                              : loc.t('updating'), // Çeviri eklendi
                           style: TextStyle(
                             fontSize: 12, 
                             color: isDark ? Colors.grey[300] : Colors.black,
@@ -208,7 +223,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  "Birim",
+                                  loc.t('currency_unit'), // Çeviri eklendi
                                   style: TextStyle(
                                     color: isDark ? Colors.white : Colors.black, 
                                     fontWeight: FontWeight.bold
@@ -218,7 +233,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Expanded(
                                 child: Center(
                                   child: Text(
-                                    "Alış",
+                                    loc.t('buy_rate'), // Çeviri eklendi
                                     style: TextStyle(
                                       color: isDark ? Colors.white : Colors.black, 
                                       fontWeight: FontWeight.bold
@@ -229,7 +244,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Expanded(
                                 child: Center(
                                   child: Text(
-                                    "Satış",
+                                    loc.t('sell_rate'), // Çeviri eklendi
                                     style: TextStyle(
                                       color: isDark ? Colors.white : Colors.black, 
                                       fontWeight: FontWeight.bold
@@ -242,7 +257,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         ...allCurrencies.entries.map((entry) {
                           final code = entry.key;
-                          final name = entry.value['name'];
+                          final currencyNameKey = allCurrencyCodes[code];
+                          final name = currencyNameKey != null ? loc.t(currencyNameKey) : code;
                           final isLive = popularRates.containsKey(code);
                           final buy = isLive ? popularRates[code]! - 0.05 : entry.value['buy'];
                           final sell = isLive ? popularRates[code]! : entry.value['sell'];

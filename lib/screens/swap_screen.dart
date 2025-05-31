@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../theme_provider.dart';
+import '../localization_provider.dart'; // Added import
 import '../services/currency_service.dart';
 
 class CurrencyData {
@@ -23,18 +24,18 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
   late TabController _tabController;
   final TextEditingController _amountController = TextEditingController(text: '1');
 
-  final List<String> _tabs = ['DÖVİZ ÇEVİRİCİ'];
+  final List<String> _tabs = ['currency_converter_tab']; // Updated to use translation key
 
-  // Default kurlar (API'den veri gelmezse kullanılacak)
+  // Default currencies (using translation keys for names)
   List<CurrencyData> _currencies = [
-    CurrencyData(code: 'USD', name: 'Amerikan Doları', rate: 38.76),
-    CurrencyData(code: 'TRY', name: 'Türk Lirası', rate: 1.0),
-    CurrencyData(code: 'EUR', name: 'Avrupa Eurosu', rate: 41.25),
-    CurrencyData(code: 'GBP', name: 'İngiliz Sterlini', rate: 49.35),
-    CurrencyData(code: 'JPY', name: 'Japon Yeni', rate: 0.25),
-    CurrencyData(code: 'CHF', name: 'İsviçre Frangı', rate: 43.80),
-    CurrencyData(code: 'CAD', name: 'Kanada Doları', rate: 28.50),
-    CurrencyData(code: 'AUD', name: 'Avustralya Doları', rate: 25.40),
+    CurrencyData(code: 'USD', name: 'usd', rate: 38.76),
+    CurrencyData(code: 'TRY', name: 'try', rate: 1.0),
+    CurrencyData(code: 'EUR', name: 'eur', rate: 41.25),
+    CurrencyData(code: 'GBP', name: 'gbp', rate: 49.35),
+    CurrencyData(code: 'JPY', name: 'jpy', rate: 0.25),
+    CurrencyData(code: 'CHF', name: 'chf', rate: 43.80),
+    CurrencyData(code: 'CAD', name: 'cad', rate: 28.50),
+    CurrencyData(code: 'AUD', name: 'aud', rate: 25.40),
   ];
 
   int _fromCurrencyIndex = 1; // TRY için index 1 (varsayılan olarak TRY seçili)
@@ -164,6 +165,7 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
 
   void _selectCurrency(bool isFrom) {
     final isDark = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
+    final loc = Provider.of<LocalizationProvider>(context, listen: false); // Added for translations
     
     showModalBottomSheet(
       context: context,
@@ -187,7 +189,7 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
               ),
               const SizedBox(height: 16),
               Text(
-                'Para Birimi Seç',
+                loc.t('select_currency'), // Updated to use translation
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -227,7 +229,7 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
                         ],
                       ),
                       subtitle: Text(
-                        _currencies[index].name,
+                        loc.t(_currencies[index].name), // Updated to use translation
                         style: TextStyle(
                           color: isDark ? Colors.grey[300] : Colors.grey[600],
                         ),
@@ -268,9 +270,10 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(
-      builder: (context, themeProvider, child) {
+    return Consumer2<ThemeProvider, LocalizationProvider>( // Updated to include LocalizationProvider
+      builder: (context, themeProvider, localizationProvider, child) {
         final isDark = themeProvider.isDarkMode;
+        final loc = localizationProvider; // Added for translations
 
         return Scaffold(
           backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.grey[50],
@@ -282,7 +285,7 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
                   children: [
                     TabBar(
                       controller: _tabController,
-                      tabs: _tabs.map((name) => Tab(text: name)).toList(),
+                      tabs: _tabs.map((name) => Tab(text: loc.t(name))).toList(), // Updated to use translation
                       labelColor: isDark ? Colors.white : Colors.black,
                       indicatorColor: isDark 
                         ? const Color(0xFF6366F1) 
@@ -298,8 +301,8 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
                         children: [
                           Text(
                             _lastUpdated != null
-                                ? "Son Güncelleme: ${_formatTime(_lastUpdated!)}"
-                                : "Henüz güncellenmedi",
+                                ? "${loc.t('last_updated')} ${_formatTime(_lastUpdated!)}" // Updated to use translation
+                                : loc.t('not_updated_yet'), // Updated to use translation
                             style: TextStyle(
                               fontSize: 12,
                               color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -400,7 +403,7 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
-                                            _currencies[_fromCurrencyIndex].name,
+                                            loc.t(_currencies[_fromCurrencyIndex].name), // Updated to use translation
                                             style: TextStyle(
                                               fontSize: 13,
                                               color: isDark ? Colors.grey[300] : Colors.grey[700],
@@ -500,7 +503,7 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
-                                            _showingTRY ? 'Türk Lirası' : _currencies[_toCurrencyIndex].name,
+                                            _showingTRY ? loc.t('try') : loc.t(_currencies[_toCurrencyIndex].name), // Updated to use translation
                                             style: TextStyle(
                                               fontSize: 13,
                                               color: isDark ? Colors.grey[300] : Colors.grey[700],
