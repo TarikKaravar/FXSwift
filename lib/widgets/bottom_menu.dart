@@ -49,7 +49,7 @@ class BottomMenu extends StatelessWidget {
       items: [
         BottomNavigationBarItem(
           icon: const Icon(Icons.money),
-          label: loc.t('currency_converter_tab'),  // 💡 Dinamik çeviri
+          label: loc.t('currency_converter_tab'),
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.swap_horiz),
@@ -57,7 +57,7 @@ class BottomMenu extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.article),
-          label: loc.t('News') ?? 'Haberler', // 'news' yoksa fallback
+          label: loc.t('news') ?? 'Haberler',  // 💡 Düzeltildi
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.settings),
