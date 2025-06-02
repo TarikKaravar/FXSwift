@@ -1,16 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform;
+
 import 'package:flutter_app/core/routes.dart';
 import 'package:flutter_app/screens/loading_screen.dart';
 import 'package:flutter_app/theme_provider.dart';
-import 'package:flutter_app/localization_provider.dart'; // YENİ EKLENEN
+import 'package:flutter_app/localization_provider.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart'; // bu dosya oluşturulmuş olmalı
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Sadece Android ve iOS platformlarında Firebase başlat
+  if (defaultTargetPlatform == TargetPlatform.android ||
+      defaultTargetPlatform == TargetPlatform.iOS) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+
   runApp(
-    MultiProvider( // ChangeNotifierProvider yerine MultiProvider kullan
+    MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => LocalizationProvider()), // YENİ EKLENEN
+        ChangeNotifierProvider(create: (_) => LocalizationProvider()),
       ],
       child: const FXSwiftApp(),
     ),
@@ -53,7 +68,7 @@ class _SplashWrapperState extends State<SplashWrapper> {
   @override
   Widget build(BuildContext context) {
     if (_showRouter) {
-      return Consumer<ThemeProvider>( // ThemeProvider'ı dinle
+      return Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
           return MaterialApp.router(
             routerConfig: router,
@@ -61,7 +76,9 @@ class _SplashWrapperState extends State<SplashWrapper> {
             theme: ThemeData(
               primarySwatch: Colors.blue,
               fontFamily: 'Roboto',
-              brightness: themeProvider.isDarkMode ? Brightness.dark : Brightness.light, // Tema desteği
+              brightness: themeProvider.isDarkMode
+                  ? Brightness.dark
+                  : Brightness.light,
             ),
           );
         },
