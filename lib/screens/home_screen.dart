@@ -48,26 +48,44 @@ class _HomeScreenState extends State<HomeScreen> {
     fetchData();
   }
 
-  Future<void> fetchData() async {
-    try {
-      final result = await CurrencyService.fetchPopularRates("USD");
-      if (!mounted) return;
-      setState(() {
-        for (final entry in result.entries) {
-          final code = entry.key;
-          final sell = entry.value; 
-          popularRates[code] = sell;
+Future<void> fetchData() async {
+  try {
+    final updatedRates = <String, double>{};
+    final updatedChanges = <String, double>{};
+
+    for (final pair in allCurrencyCodes.keys) {
+      final base = pair.split('/')[0];
+      final target = pair.split('/')[1];
+
+      final result = await CurrencyService.fetchPopularRates(base);
+      final current = result[target];
+
+      if (current != null) {
+        updatedRates[pair] = current;
+
+        final staticSell = allCurrencies[pair]?['sell'];
+        if (staticSell != null && staticSell > 0) {
+          final changePercent = ((current - staticSell) / staticSell) * 100;
+          updatedChanges[pair] = changePercent;
         }
-        lastUpdated = DateTime.now().toIso8601String();
-      });
-    } catch (e) {
-      print('Hata oluştu: $e');
-      if (!mounted) return;
-      setState(() {
-        lastUpdated = DateTime.now().toIso8601String();
-      });
+      }
     }
+
+    if (!mounted) return;
+    setState(() {
+      popularRates = updatedRates;
+      popularChanges = updatedChanges;
+      lastUpdated = DateTime.now().toIso8601String();
+    });
+  } catch (e) {
+    print('Hata oluştu: $e');
+    if (!mounted) return;
+    setState(() {
+      lastUpdated = DateTime.now().toIso8601String();
+    });
   }
+}
+
 
   String formatTime(String datetime) {
     final parsed = DateTime.parse(datetime).toLocal();
