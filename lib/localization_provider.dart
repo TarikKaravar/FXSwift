@@ -185,7 +185,7 @@ class LocalizationProvider extends ChangeNotifier {
     _loadLanguage();
   }
   
-  // Kaydedilmiş dili yükle
+  
   Future<void> _loadLanguage() async {
     final prefs = await SharedPreferences.getInstance();
     final savedLanguageCode = prefs.getString('language_code') ?? 'tr';
@@ -193,7 +193,7 @@ class LocalizationProvider extends ChangeNotifier {
     notifyListeners();
   }
   
-  // Dil değiştir ve kaydet
+  
   Future<void> changeLanguage(String languageCode) async {
     _currentLanguage = languageCode;
     final prefs = await SharedPreferences.getInstance();
@@ -201,11 +201,11 @@ class LocalizationProvider extends ChangeNotifier {
     notifyListeners();
   }
   
-  // Çeviri al
+ 
   String translate(String key) {
     return _localizedStrings[_currentLanguage]?[key] ?? key;
   }
   
-  // Kısa method
+
   String t(String key) => translate(key);
 }

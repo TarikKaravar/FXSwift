@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../theme_provider.dart';
-import '../localization_provider.dart'; // Added import for localization
+import '../localization_provider.dart'; 
 
 class ThemeScreen extends StatefulWidget {
   const ThemeScreen({super.key});
@@ -59,13 +59,13 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
     return Consumer2<ThemeProvider, LocalizationProvider>(
       builder: (context, themeProvider, localizationProvider, child) {
         final isDark = themeProvider.isDarkMode;
-        final loc = localizationProvider; // Shortcut for localization
+        final loc = localizationProvider; 
 
         return Scaffold(
           backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.grey[50],
           appBar: AppBar(
             title: Text(
-              loc.t('theme_screen_title'), // Updated to use translation
+              loc.t('theme_screen_title'), 
               style: TextStyle(
                 color: isDark ? Colors.white : Colors.black,
                 fontWeight: FontWeight.bold,
@@ -120,7 +120,7 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
                   ),
                   const SizedBox(height: 30),
                   Text(
-                    loc.t('theme_settings'), // Updated to use translation
+                    loc.t('theme_settings'), 
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -129,7 +129,7 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
                   ),
                   const SizedBox(height: 15),
                   Text(
-                    loc.t('theme_txt'), // Updated to use translation
+                    loc.t('theme_txt'), 
                     style: TextStyle(
                       fontSize: 16,
                       color: isDark ? Colors.grey[300] : Colors.black54,
@@ -173,7 +173,7 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  loc.t('dark_mode'), // Updated to use translation
+                                  loc.t('dark_mode'), 
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
@@ -181,7 +181,7 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
                                   ),
                                 ),
                                 Text(
-                                  loc.t(isDark ? 'on' : 'off'), // Updated to use translation
+                                  loc.t(isDark ? 'on' : 'off'), 
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: isDark ? Colors.grey[300] : Colors.grey[600],
@@ -268,7 +268,7 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            loc.t('theme_txt2'), // Updated to use translation
+                            loc.t('theme_txt2'),
                             style: TextStyle(
                               fontSize: 14,
                               color: isDark
@@ -294,7 +294,7 @@ class _ThemeScreenState extends State<ThemeScreen> with TickerProviderStateMixin
                     child: Column(
                       children: [
                         Text(
-                          loc.t('example_txt'), // Updated to use translation
+                          loc.t('example_txt'), 
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,

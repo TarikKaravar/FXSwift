@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../services/currency_service.dart';
 import 'package:go_router/go_router.dart';
 import '../theme_provider.dart';
-import '../localization_provider.dart'; // Localization provider eklendi
+import '../localization_provider.dart'; 
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Map<String, double> popularChanges = {};
   String? lastUpdated;
 
-  // Döviz adları artık localization provider'dan gelecek
+  
   Map<String, String> allCurrencyCodes = {
     "USD/TRY": "usd_try",
     "EUR/TRY": "eur_try", 
@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         for (final entry in result.entries) {
           final code = entry.key;
-          final sell = entry.value; // zaten double
+          final sell = entry.value; 
           popularRates[code] = sell;
         }
         lastUpdated = DateTime.now().toIso8601String();
@@ -81,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Consumer2<ThemeProvider, LocalizationProvider>(
       builder: (context, themeProvider, localizationProvider, child) {
         final isDark = themeProvider.isDarkMode;
-        final loc = localizationProvider; // Kısaltma için
+        final loc = localizationProvider; 
         
         return Scaffold(
           backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.grey[50],
@@ -115,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    loc.t('popular_rates'), // Çeviri eklendi
+                    loc.t('popular_rates'), 
                     style: TextStyle(
                       fontSize: 20, 
                       fontWeight: FontWeight.bold,
@@ -174,8 +174,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         alignment: Alignment.centerRight,
                         child: Text(
                           lastUpdated != null
-                              ? "${loc.t('last_updated')}${formatTime(lastUpdated!)}" // Çeviri eklendi
-                              : loc.t('updating'), // Çeviri eklendi
+                              ? "${loc.t('last_updated')}${formatTime(lastUpdated!)}" 
+                              : loc.t('updating'), 
                           style: TextStyle(
                             fontSize: 12, 
                             color: isDark ? Colors.grey[300] : Colors.black,
@@ -223,7 +223,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  loc.t('currency_unit'), // Çeviri eklendi
+                                  loc.t('currency_unit'), 
                                   style: TextStyle(
                                     color: isDark ? Colors.white : Colors.black, 
                                     fontWeight: FontWeight.bold
@@ -233,7 +233,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Expanded(
                                 child: Center(
                                   child: Text(
-                                    loc.t('buy_rate'), // Çeviri eklendi
+                                    loc.t('buy_rate'), 
                                     style: TextStyle(
                                       color: isDark ? Colors.white : Colors.black, 
                                       fontWeight: FontWeight.bold
@@ -244,7 +244,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Expanded(
                                 child: Center(
                                   child: Text(
-                                    loc.t('sell_rate'), // Çeviri eklendi
+                                    loc.t('sell_rate'), 
                                     style: TextStyle(
                                       color: isDark ? Colors.white : Colors.black, 
                                       fontWeight: FontWeight.bold
@@ -334,7 +334,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return InkWell(
       onTap: () {
-        // GoRouter ile navigasyon - context.push kullanarak detay sayfasına geçiş
+
         context.push('/currency-detail/$currencyCode', extra: {
           'currencyName': currencyName,
           'buyRate': buyRate,

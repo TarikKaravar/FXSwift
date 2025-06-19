@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../theme_provider.dart';
-import 'register.dart'; // Import the RegisterScreen
+import 'register.dart'; 
 
-// Profil ekranı - Giriş Ekranı
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -22,7 +22,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _checkLoginStatus(); // Uygulama açıldığında oturum durumunu kontrol et
+    _checkLoginStatus(); 
   }
 
   @override
@@ -32,14 +32,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.dispose();
   }
 
-  // Oturum durumunu kontrol et ve gerekirse yönlendir
+  
   void _checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
     final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
     final savedUsername = prefs.getString('saved_username');
 
     if (isLoggedIn && savedUsername != null) {
-      // Kullanıcı zaten giriş yapmışsa, doğrudan profil ekranına yönlendir
+      
       if (mounted) {
         Navigator.pushReplacement(
           context,
@@ -51,7 +51,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  // Bilgileri kaydet (giriş işlemi için)
+  
   void _saveCredentials() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('saved_username', _usernameController.text);
@@ -73,7 +73,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
 
       if (registeredUsername == null || registeredPassword == null) {
-        // Kayıtlı kullanıcı yoksa
+        
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -88,10 +88,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       if (registeredUsername == _usernameController.text &&
           registeredPassword == _passwordController.text) {
-        // Bilgileri kaydet
+       
         _saveCredentials();
 
-        // Başarılı giriş mesajı
+        
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -101,7 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           );
 
-          // Ana profil ekranına yönlendir
+          
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -110,7 +110,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           );
         }
       } else {
-        // Hatalı kullanıcı adı veya şifre
+        
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -175,7 +175,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // FXSwift başlığı
+                      
                       Text(
                         'FXSwift',
                         style: TextStyle(
@@ -186,7 +186,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const SizedBox(height: 50),
 
-                      // Kullanıcı adı alanı
+                      
                       Container(
                         decoration: BoxDecoration(
                           border: Border.all(
@@ -229,7 +229,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const SizedBox(height: 20),
 
-                      // Şifre alanı
+                      
                       Container(
                         decoration: BoxDecoration(
                           border: Border.all(
@@ -286,7 +286,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const SizedBox(height: 30),
 
-                      // Giriş Yap butonu
+                      
                       Container(
                         width: double.infinity,
                         height: 50,
@@ -345,7 +345,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const SizedBox(height: 15),
 
-                      // Kayıt Ol butonu
+                      
                       Container(
                         width: double.infinity,
                         height: 50,
@@ -398,19 +398,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-// Giriş yaptıktan sonra gösterilecek kullanıcı profil ekranı
+
 class UserProfileScreen extends StatelessWidget {
   final String username;
 
   const UserProfileScreen({super.key, required this.username});
 
-  // Çıkış yapma işlemi
   void _logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('isLoggedIn');
     await prefs.remove('saved_username');
 
-    // Giriş ekranına geri dön
+    
     if (context.mounted) {
       Navigator.pushReplacement(
         context,
@@ -448,7 +447,7 @@ class UserProfileScreen extends StatelessWidget {
                   Icons.logout,
                   color: isDark ? Colors.white : Colors.black,
                 ),
-                onPressed: () => _logout(context), // Çıkış yapma işlevini çağır
+                onPressed: () => _logout(context), 
               ),
             ],
           ),
@@ -563,7 +562,7 @@ class UserProfileScreen extends StatelessWidget {
                     ),
                     child: ElevatedButton(
                       onPressed: () {
-                        // Profil düzenleme sayfasına git
+                        
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('Profil düzenleme özelliği yakında eklenecek'),
@@ -591,7 +590,7 @@ class UserProfileScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Ek bilgi kartı
+                  
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(

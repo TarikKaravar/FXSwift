@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/theme_provider.dart';
-import 'package:flutter_app/localization_provider.dart'; // LocalizationProvider'ı import et.
+import 'package:flutter_app/localization_provider.dart'; 
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -57,7 +57,7 @@ class BottomMenu extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.article),
-          label: loc.t('news') ?? 'Haberler',  // 💡 Düzeltildi
+          label: loc.t('news') ?? 'Haberler',  
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.settings),

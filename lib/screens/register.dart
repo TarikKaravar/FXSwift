@@ -23,7 +23,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String _passwordStrengthText = '';
   Color _passwordStrengthColor = Colors.red;
 
-  // Google Sign-In yapılandırması
+  
   final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: ['email', 'profile'],
   );
@@ -133,21 +133,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _isLoading = true;
       });
 
-      // Önce mevcut hesapları temizle
+      
       await _googleSignIn.signOut();
       
-      // Google Sign-In yapılandırmasını kontrol et
+      
       print('Google Sign-In starting...');
       print('Google Sign-In configured: ${_googleSignIn.currentUser}');
 
       final GoogleSignInAccount? account = await _googleSignIn.signIn();
       
       if (account != null) {
-        // Hesap bilgilerini logla
+        
         print('Google Account: ${account.email}');
         print('Display Name: ${account.displayName}');
         
-        // Authentication token'ı al
+        
         final GoogleSignInAuthentication auth = await account.authentication;
         print('Access Token available: ${auth.accessToken != null}');
         print('ID Token available: ${auth.idToken != null}');
@@ -170,7 +170,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           Navigator.pop(context);
         }
       } else {
-        // Kullanıcı işlemi iptal etti
+        
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -201,7 +201,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           errorMessage = 'Google hesabı gerekli.';
           break;
         default:
-          // ApiException 10 özel durumu
+          
           if (error.message?.contains('ApiException: 10') == true) {
             errorMessage = 'Google yapılandırma hatası. SHA-1 fingerprint ve OAuth ayarlarını kontrol edin.';
           } else {
@@ -340,7 +340,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       const SizedBox(height: 50),
-                      // Kullanıcı Adı
+                      
                       Container(
                         decoration: BoxDecoration(
                           border: Border.all(
@@ -379,7 +379,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      // Şifre Alanı
+                      
                       Container(
                         decoration: BoxDecoration(
                           border: Border.all(
@@ -476,7 +476,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ],
                       const SizedBox(height: 30),
-                      // Normal Kayıt Ol Butonu
+                      
                       Container(
                         width: double.infinity,
                         height: 50,
@@ -505,7 +505,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      // Google ile Kayıt Butonu
+                      
                       SizedBox(
                         width: double.infinity,
                         height: 50,

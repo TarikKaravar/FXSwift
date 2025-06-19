@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../theme_provider.dart';
-import '../localization_provider.dart'; // Yeni eklenen import
+import '../localization_provider.dart'; 
 import 'profile_screen.dart';
 import 'theme_screen.dart';
 import 'language_screen.dart';
@@ -14,13 +14,13 @@ class SettingsScreen extends StatelessWidget {
     return Consumer2<ThemeProvider, LocalizationProvider>(
       builder: (context, themeProvider, localizationProvider, child) {
         final isDark = themeProvider.isDarkMode;
-        final loc = localizationProvider; // Kısaltma için
+        final loc = localizationProvider; 
         
         return Scaffold(
           backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.grey[50],
           body: Column(
             children: [
-              // Üst başlık bölümü
+              
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
@@ -38,7 +38,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    // App logo/icon
+                    
                     Container(
                       width: 80,
                       height: 80,
@@ -80,7 +80,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      loc.t('currency_converter'), // Çeviri eklendi
+                      loc.t('currency_converter'), 
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -92,7 +92,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ),
               
-              // Ana ayarlar bölümü
+              
               Expanded(
                 child: Container(
                   margin: const EdgeInsets.all(20),
@@ -118,7 +118,7 @@ class SettingsScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        loc.t('settings'), // Çeviri eklendi
+                        loc.t('settings'), 
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -127,7 +127,7 @@ class SettingsScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        loc.t('settings_description'), // Çeviri eklendi
+                        loc.t('settings_description'), 
                         style: TextStyle(
                           fontSize: 14,
                           color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -138,7 +138,7 @@ class SettingsScreen extends StatelessWidget {
                       
                       _buildSettingsButton(
                         context,
-                        loc.t('profile'), // Çeviri eklendi
+                        loc.t('profile'), 
                         Icons.person_outline,
                         () => _navigateToProfile(context),
                         isDark,
@@ -147,7 +147,7 @@ class SettingsScreen extends StatelessWidget {
                       
                       _buildSettingsButton(
                         context,
-                        loc.t('app_theme'), // Çeviri eklendi
+                        loc.t('app_theme'), 
                         isDark ? Icons.nightlight_round : Icons.wb_sunny,
                         () => _navigateToTheme(context),
                         isDark,
@@ -156,7 +156,7 @@ class SettingsScreen extends StatelessWidget {
                       
                       _buildSettingsButton(
                         context,
-                        loc.t('language_options'), // Çeviri eklendi
+                        loc.t('language_options'), 
                         Icons.language_outlined,
                         () => _navigateToLanguage(context),
                         isDark,
@@ -166,11 +166,11 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ),
               
-              // Alt bilgi
+              
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: Text(
-                  loc.t('version'), // Çeviri eklendi
+                  loc.t('version'), 
                   style: TextStyle(
                     fontSize: 12,
                     color: isDark ? Colors.grey[500] : Colors.grey[500],
