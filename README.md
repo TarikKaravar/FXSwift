@@ -34,57 +34,69 @@ Bu proje, Flutter ile uygulama geliştirmeye yeni başlayanlar için hem pratik 
 
 ## Yükleme Ekranı 
 
-<img src="assets/readmephoto/loading.jpg" width="300"/>
+<img src="https://github.com/tarikkaravar/FXSwift/blob/main/assets/readmephoto/loading.jpg?raw=true" width="300"/>
+
 
 ## Api Çekme İşlemi
 
-<img src="assets/readmephoto/succes.png" width="400"/>
+<img src="https://github.com/tarikkaravar/FXSwift/blob/main/assets/readmephoto/succes.png?raw=true" width="400"/>
+
 
 ## Ana Ekran Kur Değerleri 
 
-<img src="assets/readmephoto/kurlarbeyaz.jpg" width="300"/>
-<img src="assets/readmephoto/kurlarsiyah.jpg" width="300"/>
+<img src="https://github.com/tarikkaravar/FXSwift/blob/main/assets/readmephoto/kurlarbeyaz.jpg?raw=true" width="300"/>
+<img src="https://github.com/tarikkaravar/FXSwift/blob/main/assets/readmephoto/kurlarsiyah.jpg?raw=true" width="300"/>
+
 
 ## Kur Çevirme Ekranı 
 
-<img src="assets/readmephoto/ceviribeyaz.jpg" width="300"/>
-<img src="assets/readmephoto/cevirisiyah.jpg" width="300"/>
+<img src="https://github.com/tarikkaravar/FXSwift/blob/main/assets/readmephoto/ceviribeyaz.jpg?raw=true" width="300"/>
+<img src="https://github.com/tarikkaravar/FXSwift/blob/main/assets/readmephoto/cevirisiyah.jpg?raw=true" width="300"/>
+
 
 ## Haberler Ekranı 
 
-<img src="assets/readmephoto/haberbeyaz.jpg" width="300"/>
-<img src="assets/readmephoto/habersiyah.jpg" width="300"/>
+<img src="https://github.com/tarikkaravar/FXSwift/blob/main/assets/readmephoto/haberbeyaz.jpg?raw=true" width="300"/>
+<img src="https://github.com/tarikkaravar/FXSwift/blob/main/assets/readmephoto/habersiyah.jpg?raw=true" width="300"/>
+
 
 ## Ayarlar Ekranı 
 
-<img src="assets/readmephoto/ayarbeyaz.jpg" width="300"/>
-<img src="assets/readmephoto/ayarsiyah.jpg" width="300"/>
+<img src="https://github.com/tarikkaravar/FXSwift/blob/main/assets/readmephoto/ayarbeyaz.jpg?raw=true" width="300"/>
+<img src="https://github.com/tarikkaravar/FXSwift/blob/main/assets/readmephoto/ayarsiyah.jpg?raw=true" width="300"/>
+
 
 ## Dil Değiştirme Ekranı 
 
-<img src="assets/readmephoto/dilbeyaz.jpg" width="300"/>
-<img src="assets/readmephoto/dilsiyah.jpg" width="300"/>
+<img src="https://github.com/tarikkaravar/FXSwift/blob/main/assets/readmephoto/dilbeyaz.jpg?raw=true" width="300"/>
+<img src="https://github.com/tarikkaravar/FXSwift/blob/main/assets/readmephoto/dilsiyah.jpg?raw=true" width="300"/>
+
 
 ## Uygulama Teması Ekranı 
 
-<img src="assets/readmephoto/modbeyaz.jpg" width="300"/>
-<img src="assets/readmephoto/modsiyah.jpg" width="300"/>
+<img src="https://github.com/tarikkaravar/FXSwift/blob/main/assets/readmephoto/modbeyaz.jpg?raw=true" width="300"/>
+<img src="https://github.com/tarikkaravar/FXSwift/blob/main/assets/readmephoto/modsiyah.jpg?raw=true" width="300"/>
+
 
 ## Giriş Yapma Ekranı
 
-<img src="assets/readmephoto/girisbeyaz.jpg" width="300"/>
-<img src="assets/readmephoto/girissiyah.jpg" width="300"/>
+<img src="https://github.com/tarikkaravar/FXSwift/blob/main/assets/readmephoto/girisbeyaz.jpg?raw=true" width="300"/>
+<img src="https://github.com/tarikkaravar/FXSwift/blob/main/assets/readmephoto/girissiyah.jpg?raw=true" width="300"/>
+
 
 ## Kayıt Olma Ekranı 
 
-<img src="assets/readmephoto/kayıtbeyaz.png" width="300"/>
-<img src="assets/readmephoto/kayıtsiyah.png" width="300"/>
+<img src="https://github.com/tarikkaravar/FXSwift/blob/main/assets/readmephoto/kayıtbeyaz.png?raw=true" width="300"/>
+<img src="https://github.com/tarikkaravar/FXSwift/blob/main/assets/readmephoto/kayıtsiyah.png?raw=true" width="300"/>
+
 
 ## Profil Ekranı 
 
-<img src="assets/readmephoto/profilbeyaz.png" width="300"/>
-<img src="assets/readmephoto/profilsiyah.png" width="300"/>
+<img src="https://github.com/tarikkaravar/FXSwift/blob/main/assets/readmephoto/profilbeyaz.png?raw=true" width="300"/>
+<img src="https://github.com/tarikkaravar/FXSwift/blob/main/assets/readmephoto/profilsiyah.png?raw=true" width="300"/>
+
 
 ## Google ile Giriş Ekranı 
 
-<img src="assets/readmephoto/google.jpg" width="300"/>
+<img src="https://github.com/tarikkaravar/FXSwift/blob/main/assets/readmephoto/google.jpg?raw=true" width="300"/>
+
