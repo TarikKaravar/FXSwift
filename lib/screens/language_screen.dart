@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../theme_provider.dart';
-import '../localization_provider.dart'; // Yeni eklenen import
+import '../localization_provider.dart'; 
 
 class LanguageScreen extends StatefulWidget {
   const LanguageScreen({super.key});
@@ -14,7 +14,7 @@ class LanguageScreen extends StatefulWidget {
 class _LanguageScreenState extends State<LanguageScreen> with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
-  String selectedLanguageCode = 'tr'; // Dil kodunu takip ediyoruz
+  String selectedLanguageCode = 'tr'; 
 
   final List<Map<String, String>> languages = [
     {'name_key': 'turkish', 'code': 'tr', 'flag': '🇹🇷'},
@@ -39,7 +39,7 @@ class _LanguageScreenState extends State<LanguageScreen> with TickerProviderStat
     _loadSelectedLanguage();
   }
 
-  // Kaydedilmiş dili yükle
+ 
   Future<void> _loadSelectedLanguage() async {
     final prefs = await SharedPreferences.getInstance();
     final savedLanguageCode = prefs.getString('language_code') ?? 'tr';
@@ -59,7 +59,7 @@ class _LanguageScreenState extends State<LanguageScreen> with TickerProviderStat
       selectedLanguageCode = languageCode;
     });
     
-    // LocalizationProvider'ı güncelle
+    
     final localizationProvider = Provider.of<LocalizationProvider>(context, listen: false);
     await localizationProvider.changeLanguage(languageCode);
     
@@ -81,13 +81,13 @@ class _LanguageScreenState extends State<LanguageScreen> with TickerProviderStat
     return Consumer2<ThemeProvider, LocalizationProvider>(
       builder: (context, themeProvider, localizationProvider, child) {
         final isDark = themeProvider.isDarkMode;
-        final loc = localizationProvider; // Kısaltma için
+        final loc = localizationProvider; 
 
         return Scaffold(
           backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.grey[50],
           appBar: AppBar(
             title: Text(
-              loc.t('language_options'), // Çeviri eklendi
+              loc.t('language_options'), 
               style: TextStyle(
                 color: isDark ? Colors.white : Colors.black,
                 fontWeight: FontWeight.bold,
@@ -124,7 +124,7 @@ class _LanguageScreenState extends State<LanguageScreen> with TickerProviderStat
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Başlık ve açıklama
+                
                 AnimatedBuilder(
                   animation: _scaleAnimation,
                   builder: (context, child) {
@@ -142,7 +142,7 @@ class _LanguageScreenState extends State<LanguageScreen> with TickerProviderStat
                 ),
                 const SizedBox(height: 30),
                 Text(
-                  loc.t('language_settings'), // Çeviri eklendi
+                  loc.t('language_settings'), 
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -151,7 +151,7 @@ class _LanguageScreenState extends State<LanguageScreen> with TickerProviderStat
                 ),
                 const SizedBox(height: 15),
                 Text(
-                  loc.t('language_description'), // Çeviri eklendi
+                  loc.t('language_description'), 
                   style: TextStyle(
                     fontSize: 16,
                     color: isDark ? Colors.grey[300] : Colors.black54,
@@ -161,10 +161,10 @@ class _LanguageScreenState extends State<LanguageScreen> with TickerProviderStat
                 ),
                 const SizedBox(height: 40),
                 
-                // Dil seçenekleri
+                
                 ...languages.map((language) {
                   final isSelected = selectedLanguageCode == language['code'];
-                  final languageName = loc.t(language['name_key']!); // Çeviri kullanıyoruz
+                  final languageName = loc.t(language['name_key']!); 
                   
                   return Container(
                     margin: const EdgeInsets.only(bottom: 16),
@@ -195,7 +195,7 @@ class _LanguageScreenState extends State<LanguageScreen> with TickerProviderStat
                           ),
                           child: Row(
                             children: [
-                              // Bayrak emoji
+                              
                               Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
@@ -214,13 +214,13 @@ class _LanguageScreenState extends State<LanguageScreen> with TickerProviderStat
                                 ),
                               ),
                               const SizedBox(width: 16),
-                              // Dil bilgileri
+                              
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      languageName, // Çevrilmiş dil adı
+                                      languageName, 
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.w600,
@@ -241,7 +241,7 @@ class _LanguageScreenState extends State<LanguageScreen> with TickerProviderStat
                                   ],
                                 ),
                               ),
-                              // Seçim göstergesi
+                              
                               if (isSelected)
                                 Container(
                                   padding: const EdgeInsets.all(4),

@@ -22,15 +22,15 @@ class _NewsScreenState extends State<NewsScreen> {
     _futureNews = NewsService().fetchCurrencyNews();
   }
 
-  // URL açma fonksiyonu - Google'da arama veya direkt link açma
+ 
   Future<void> _openUrl(String url, BuildContext context, bool isDark) async {
     try {
-      // URL'yi düzenle ve kontrol et
+      
       String finalUrl = url;
       
-      // Eğer URL geçerli değilse veya boşsa, Google'da arama yap
+      
       if (url.isEmpty || !url.startsWith('http')) {
-        // Haber başlığını kullanarak Google'da arama yap
+        
         finalUrl = 'https://www.google.com/search?q=${Uri.encodeComponent(url)}';
         print("🔍 Google arama URL'si oluşturuluyor: $finalUrl");
       } else {
@@ -39,14 +39,14 @@ class _NewsScreenState extends State<NewsScreen> {
 
       final Uri uri = Uri.parse(finalUrl);
       
-      // URL'yi açmayı dene
+      
       bool launched = await launchUrl(
         uri,
-        mode: LaunchMode.externalApplication, // Harici tarayıcıda aç
+        mode: LaunchMode.externalApplication, 
       );
 
       if (!launched) {
-        // İlk deneme başarısızsa, alternatif yöntem dene
+        
         launched = await launchUrl(
           uri,
           mode: LaunchMode.platformDefault,
@@ -54,7 +54,7 @@ class _NewsScreenState extends State<NewsScreen> {
       }
 
       if (!launched) {
-        // Hala açılamazsa Google aramaya yönlendir
+        
         final googleSearchUrl = 'https://www.google.com/search?q=${Uri.encodeComponent(url)}';
         final googleUri = Uri.parse(googleSearchUrl);
         
@@ -93,7 +93,7 @@ class _NewsScreenState extends State<NewsScreen> {
     }
   }
 
-  // Haber başlığı ile Google'da arama yapma fonksiyonu
+  
   Future<void> _searchOnGoogle(String title, BuildContext context, bool isDark) async {
     try {
       final searchQuery = Uri.encodeComponent("$title döviz haberi");
@@ -116,7 +116,7 @@ class _NewsScreenState extends State<NewsScreen> {
     }
   }
 
-  // Hata mesajı gösterme fonksiyonu
+  
   void _showErrorSnackBar(BuildContext context, bool isDark, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -337,7 +337,7 @@ class _NewsScreenState extends State<NewsScreen> {
                             await _openUrl(news.url, context, isDark);
                           },
                           onLongPress: () async {
-                            // Uzun basıldığında Google'da arama yap
+                            
                             print("🔍 Uzun basıldı - Google'da arama yapılıyor: ${news.title}");
                             await _searchOnGoogle(news.title, context, isDark);
                           },

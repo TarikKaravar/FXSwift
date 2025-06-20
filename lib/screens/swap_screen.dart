@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../theme_provider.dart';
-import '../localization_provider.dart'; // Added import
+import '../localization_provider.dart'; 
 import '../services/currency_service.dart';
 
 class CurrencyData {
@@ -24,9 +24,9 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
   late TabController _tabController;
   final TextEditingController _amountController = TextEditingController(text: '1');
 
-  final List<String> _tabs = ['currency_converter_tab']; // Updated to use translation key
+  final List<String> _tabs = ['currency_converter_tab']; 
 
-  // Default currencies (using translation keys for names)
+  
   List<CurrencyData> _currencies = [
     CurrencyData(code: 'USD', name: 'usd', rate: 38.76),
     CurrencyData(code: 'TRY', name: 'try', rate: 1.0),
@@ -38,10 +38,10 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
     CurrencyData(code: 'AUD', name: 'aud', rate: 25.40),
   ];
 
-  int _fromCurrencyIndex = 1; // TRY için index 1 (varsayılan olarak TRY seçili)
-  int _toCurrencyIndex = 0;   // USD için index 0 (varsayılan olarak USD seçili)
+  int _fromCurrencyIndex = 1; 
+  int _toCurrencyIndex = 0;   
 
-  bool _showingTRY = false; // Artık sağ tarafta USD gösteriyoruz, TRY değil
+  bool _showingTRY = false; 
   double _result = 38.76;
   bool _isLoading = false;
   String? _lastUpdated;
@@ -72,16 +72,16 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
       if (!mounted) return;
 
       setState(() {
-        // Live rate'leri currency listesine uygula
+       
         for (int i = 0; i < _currencies.length; i++) {
           final currencyCode = _currencies[i].code;
           
-          // TRY için özel işlem
+          
           if (currencyCode == 'TRY') {
-            continue; // TRY rate'i 1.0 olarak kalacak
+            continue; 
           }
           
-          // API'den gelen rate'leri kullan
+          
           String rateKey = '';
           if (currencyCode == 'USD') {
             rateKey = 'USD/TRY';
@@ -165,7 +165,7 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
 
   void _selectCurrency(bool isFrom) {
     final isDark = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
-    final loc = Provider.of<LocalizationProvider>(context, listen: false); // Added for translations
+    final loc = Provider.of<LocalizationProvider>(context, listen: false); 
     
     showModalBottomSheet(
       context: context,
@@ -189,7 +189,7 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
               ),
               const SizedBox(height: 16),
               Text(
-                loc.t('select_currency'), // Updated to use translation
+                loc.t('select_currency'), 
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -229,7 +229,7 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
                         ],
                       ),
                       subtitle: Text(
-                        loc.t(_currencies[index].name), // Updated to use translation
+                        loc.t(_currencies[index].name), 
                         style: TextStyle(
                           color: isDark ? Colors.grey[300] : Colors.grey[600],
                         ),
@@ -270,10 +270,10 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<ThemeProvider, LocalizationProvider>( // Updated to include LocalizationProvider
+    return Consumer2<ThemeProvider, LocalizationProvider>( 
       builder: (context, themeProvider, localizationProvider, child) {
         final isDark = themeProvider.isDarkMode;
-        final loc = localizationProvider; // Added for translations
+        final loc = localizationProvider; 
 
         return Scaffold(
           backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.grey[50],
@@ -285,7 +285,7 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
                   children: [
                     TabBar(
                       controller: _tabController,
-                      tabs: _tabs.map((name) => Tab(text: loc.t(name))).toList(), // Updated to use translation
+                      tabs: _tabs.map((name) => Tab(text: loc.t(name))).toList(),
                       labelColor: isDark ? Colors.white : Colors.black,
                       indicatorColor: isDark 
                         ? const Color(0xFF6366F1) 
@@ -293,7 +293,7 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
                       unselectedLabelColor: isDark ? Colors.grey[400] : Colors.grey,
                       indicatorWeight: 3,
                     ),
-                    // Güncelleme bilgisi ve yenile butonu
+                    
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       child: Row(
@@ -301,8 +301,8 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
                         children: [
                           Text(
                             _lastUpdated != null
-                                ? "${loc.t('last_updated')} ${_formatTime(_lastUpdated!)}" // Updated to use translation
-                                : loc.t('not_updated_yet'), // Updated to use translation
+                                ? "${loc.t('last_updated')} ${_formatTime(_lastUpdated!)}" 
+                                : loc.t('not_updated_yet'), 
                             style: TextStyle(
                               fontSize: 12,
                               color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -350,7 +350,7 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            // Para birimi seçim kartları
+                            
                             Row(
                               children: [
                                 Expanded(
@@ -403,7 +403,7 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
-                                            loc.t(_currencies[_fromCurrencyIndex].name), // Updated to use translation
+                                            loc.t(_currencies[_fromCurrencyIndex].name), 
                                             style: TextStyle(
                                               fontSize: 13,
                                               color: isDark ? Colors.grey[300] : Colors.grey[700],
@@ -503,7 +503,7 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
-                                            _showingTRY ? loc.t('try') : loc.t(_currencies[_toCurrencyIndex].name), // Updated to use translation
+                                            _showingTRY ? loc.t('try') : loc.t(_currencies[_toCurrencyIndex].name), 
                                             style: TextStyle(
                                               fontSize: 13,
                                               color: isDark ? Colors.grey[300] : Colors.grey[700],
@@ -573,7 +573,7 @@ class _SwapScreenState extends State<SwapScreen> with SingleTickerProviderStateM
                             
                             const SizedBox(height: 24),
                             
-                            // Miktar girişi ve sonuç
+                            
                             Row(
                               children: [
                                 Expanded(

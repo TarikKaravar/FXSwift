@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../services/currency_service.dart';
 import 'package:go_router/go_router.dart';
 import '../theme_provider.dart';
-import '../localization_provider.dart'; // Localization provider eklendi
+import '../localization_provider.dart'; 
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Map<String, double> popularChanges = {};
   String? lastUpdated;
 
-  // Döviz adları artık localization provider'dan gelecek
+  
   Map<String, String> allCurrencyCodes = {
     "USD/TRY": "usd_try",
     "EUR/TRY": "eur_try", 
@@ -48,26 +48,44 @@ class _HomeScreenState extends State<HomeScreen> {
     fetchData();
   }
 
-  Future<void> fetchData() async {
-    try {
-      final result = await CurrencyService.fetchPopularRates("USD");
-      if (!mounted) return;
-      setState(() {
-        for (final entry in result.entries) {
-          final code = entry.key;
-          final sell = entry.value; // zaten double
-          popularRates[code] = sell;
+Future<void> fetchData() async {
+  try {
+    final updatedRates = <String, double>{};
+    final updatedChanges = <String, double>{};
+
+    for (final pair in allCurrencyCodes.keys) {
+      final base = pair.split('/')[0];
+      final target = pair.split('/')[1];
+
+      final result = await CurrencyService.fetchPopularRates(base);
+      final current = result[target];
+
+      if (current != null) {
+        updatedRates[pair] = current;
+
+        final staticSell = allCurrencies[pair]?['sell'];
+        if (staticSell != null && staticSell > 0) {
+          final changePercent = ((current - staticSell) / staticSell) * 100;
+          updatedChanges[pair] = changePercent;
         }
-        lastUpdated = DateTime.now().toIso8601String();
-      });
-    } catch (e) {
-      print('Hata oluştu: $e');
-      if (!mounted) return;
-      setState(() {
-        lastUpdated = DateTime.now().toIso8601String();
-      });
+      }
     }
+
+    if (!mounted) return;
+    setState(() {
+      popularRates = updatedRates;
+      popularChanges = updatedChanges;
+      lastUpdated = DateTime.now().toIso8601String();
+    });
+  } catch (e) {
+    print('Hata oluştu: $e');
+    if (!mounted) return;
+    setState(() {
+      lastUpdated = DateTime.now().toIso8601String();
+    });
   }
+}
+
 
   String formatTime(String datetime) {
     final parsed = DateTime.parse(datetime).toLocal();
@@ -81,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Consumer2<ThemeProvider, LocalizationProvider>(
       builder: (context, themeProvider, localizationProvider, child) {
         final isDark = themeProvider.isDarkMode;
-        final loc = localizationProvider; // Kısaltma için
+        final loc = localizationProvider; 
         
         return Scaffold(
           backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.grey[50],
@@ -115,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    loc.t('popular_rates'), // Çeviri eklendi
+                    loc.t('popular_rates'), 
                     style: TextStyle(
                       fontSize: 20, 
                       fontWeight: FontWeight.bold,
@@ -174,8 +192,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         alignment: Alignment.centerRight,
                         child: Text(
                           lastUpdated != null
-                              ? "${loc.t('last_updated')}${formatTime(lastUpdated!)}" // Çeviri eklendi
-                              : loc.t('updating'), // Çeviri eklendi
+                              ? "${loc.t('last_updated')}${formatTime(lastUpdated!)}" 
+                              : loc.t('updating'), 
                           style: TextStyle(
                             fontSize: 12, 
                             color: isDark ? Colors.grey[300] : Colors.black,
@@ -223,7 +241,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  loc.t('currency_unit'), // Çeviri eklendi
+                                  loc.t('currency_unit'), 
                                   style: TextStyle(
                                     color: isDark ? Colors.white : Colors.black, 
                                     fontWeight: FontWeight.bold
@@ -233,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Expanded(
                                 child: Center(
                                   child: Text(
-                                    loc.t('buy_rate'), // Çeviri eklendi
+                                    loc.t('buy_rate'), 
                                     style: TextStyle(
                                       color: isDark ? Colors.white : Colors.black, 
                                       fontWeight: FontWeight.bold
@@ -244,7 +262,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Expanded(
                                 child: Center(
                                   child: Text(
-                                    loc.t('sell_rate'), // Çeviri eklendi
+                                    loc.t('sell_rate'), 
                                     style: TextStyle(
                                       color: isDark ? Colors.white : Colors.black, 
                                       fontWeight: FontWeight.bold
@@ -334,7 +352,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return InkWell(
       onTap: () {
-        // GoRouter ile navigasyon - context.push kullanarak detay sayfasına geçiş
+
         context.push('/currency-detail/$currencyCode', extra: {
           'currencyName': currencyName,
           'buyRate': buyRate,

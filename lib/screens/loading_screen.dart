@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:flutter_app/screens/home_screen.dart'; // HomeScreen'i import edin
+import 'package:flutter_app/screens/home_screen.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({Key? key}) : super(key: key);
@@ -21,25 +21,23 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
       duration: const Duration(seconds: 2),
     )..repeat();
 
-    // Uygulama verilerini yükle ve ardından ana sayfaya geç
+    
     _loadAppData();
   }
 
-  // Uygulama verilerini yükleme simülasyonu
+  
   Future<void> _loadAppData() async {
-    // Gerçek verilerinizi yüklemek için gereken işlemler:
-    // API çağrıları, veritabanı işlemleri vs.
     
-    // Simülasyon için 5 saniye bekle
+    
     await Future.delayed(const Duration(seconds: 5));
     
-    // UI güncelle ve ardından ana sayfaya geç
+    
     if (mounted) {
       setState(() {
         _isLoading = false;
       });
       
-      // MainScreen yerine HomeScreen'e yönlendir
+      
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const HomeScreen()),
       );
@@ -65,20 +63,20 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFFFFD700), // Altın sarısı
+                color: Color(0xFFFFD700), 
               ),
             ),
             const SizedBox(height: 20),
             
-            // Lottie animasyonu
+            
             SizedBox(
               width: 200,
               height: 200,
               child: Lottie.asset(
-                'assets/motions/loading.lottie', // Lottie dosyanızın yolu
+                'assets/motions/loading.lottie', 
                 fit: BoxFit.contain,
                 errorBuilder: (context, error, stackTrace) {
-                  // Animasyon yüklenemezse gösterilecek yedek içerik
+                  
                   return Container(
                     color: Colors.black,
                     child: const Icon(
@@ -102,7 +100,7 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
             ),
             
             const SizedBox(height: 30),
-            // İlerleme çubuğu
+            
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 50),
               child: LinearProgressIndicator(
@@ -114,7 +112,7 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
             ),
             
             const SizedBox(height: 30),
-            // Para birimi etiketleri
+            
             Wrap(
               spacing: 10,
               runSpacing: 10,
@@ -132,7 +130,7 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
   }
 }
 
-// Para birimi etiketleri için widget
+
 class CurrencyTag extends StatelessWidget {
   final String text;
   

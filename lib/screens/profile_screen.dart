@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../theme_provider.dart';
+import 'register.dart'; 
 
-// Profil ekranı - Giriş Ekranı
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -17,17 +18,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _isPasswordVisible = false;
   bool _isLoading = false;
-  
-  // Şifre güvenliği değişkenleri
-  double _passwordStrength = 0.0;
-  String _passwordStrengthText = '';
-  Color _passwordStrengthColor = Colors.red;
 
   @override
   void initState() {
     super.initState();
-    _checkLoginStatus(); // Uygulama açıldığında oturum durumunu kontrol et
-    _passwordController.addListener(_checkPasswordStrength);
+    _checkLoginStatus(); 
   }
 
   @override
@@ -37,14 +32,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.dispose();
   }
 
-  // Oturum durumunu kontrol et ve gerekirse yönlendir
+  
   void _checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
     final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
     final savedUsername = prefs.getString('saved_username');
 
     if (isLoggedIn && savedUsername != null) {
-      // Kullanıcı zaten giriş yapmışsa, doğrudan profil ekranına yönlendir
+      
       if (mounted) {
         Navigator.pushReplacement(
           context,
@@ -56,66 +51,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  // Bilgileri kaydet (kayıt işlemi için)
-  void _saveCredentials({required bool isRegistration}) async {
+  
+  void _saveCredentials() async {
     final prefs = await SharedPreferences.getInstance();
-    if (isRegistration) {
-      await prefs.setString('registered_username', _usernameController.text);
-      await prefs.setString('registered_password', _passwordController.text);
-    } else {
-      await prefs.setString('saved_username', _usernameController.text);
-      await prefs.setBool('isLoggedIn', true);
-    }
-  }
-
-  // Şifre gücünü kontrol et
-  void _checkPasswordStrength() {
-    final password = _passwordController.text;
-    double strength = 0.0;
-    String strengthText = '';
-    Color strengthColor = Colors.red;
-
-    if (password.isEmpty) {
-      strength = 0.0;
-      strengthText = '';
-    } else if (password.length < 4) {
-      strength = 0.25;
-      strengthText = 'Çok Zayıf';
-      strengthColor = Colors.red;
-    } else if (password.length < 6) {
-      strength = 0.5;
-      strengthText = 'Zayıf';
-      strengthColor = Colors.orange;
-    } else if (password.length < 8) {
-      strength = 0.75;
-      strengthText = 'Orta';
-      strengthColor = Colors.yellow[700]!;
-    } else {
-      bool hasUppercase = password.contains(RegExp(r'[A-Z]'));
-      bool hasLowercase = password.contains(RegExp(r'[a-z]'));
-      bool hasDigits = password.contains(RegExp(r'[0-9]'));
-      bool hasSpecialCharacters = password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
-
-      if (hasUppercase && hasLowercase && hasDigits && hasSpecialCharacters) {
-        strength = 1.0;
-        strengthText = 'Çok Güçlü';
-        strengthColor = Colors.green;
-      } else if ((hasUppercase || hasLowercase) && hasDigits) {
-        strength = 0.9;
-        strengthText = 'Güçlü';
-        strengthColor = Colors.lightGreen;
-      } else {
-        strength = 0.75;
-        strengthText = 'Orta';
-        strengthColor = Colors.yellow[700]!;
-      }
-    }
-
-    setState(() {
-      _passwordStrength = strength;
-      _passwordStrengthText = strengthText;
-      _passwordStrengthColor = strengthColor;
-    });
+    await prefs.setString('saved_username', _usernameController.text);
+    await prefs.setBool('isLoggedIn', true);
   }
 
   void _login() async {
@@ -133,7 +73,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
 
       if (registeredUsername == null || registeredPassword == null) {
-        // Kayıtlı kullanıcı yoksa
+        
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -146,12 +86,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         return;
       }
 
-      if (registeredUsername == _usernameController.text && 
+      if (registeredUsername == _usernameController.text &&
           registeredPassword == _passwordController.text) {
-        // Bilgileri kaydet
-        _saveCredentials(isRegistration: false);
+       
+        _saveCredentials();
 
-        // Başarılı giriş mesajı
+        
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -161,7 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           );
 
-          // Ana profil ekranına yönlendir
+          
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -170,7 +110,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           );
         }
       } else {
-        // Hatalı kullanıcı adı veya şifre
+        
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -180,39 +120,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           );
         }
-      }
-    }
-  }
-
-  void _register() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
-
-      // Bilgileri kaydet (kayıt işlemi)
-      _saveCredentials(isRegistration: true);
-
-      // Kayıt işlemi simülasyonu (2 saniye bekleme)
-      await Future.delayed(const Duration(seconds: 2));
-
-      setState(() {
-        _isLoading = false;
-      });
-
-      // Başarılı kayıt mesajı
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Kayıt başarılı, ${_usernameController.text}! Lütfen giriş yapın.'),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 2),
-          ),
-        );
-
-        // Formu sıfırla
-        _usernameController.clear();
-        _passwordController.clear();
       }
     }
   }
@@ -233,9 +140,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            backgroundColor: isDark 
-              ? const Color(0xFF2D2D2D) 
-              : const Color.fromRGBO(255, 193, 7, 1),
+            backgroundColor: isDark
+                ? const Color(0xFF2D2D2D)
+                : const Color.fromRGBO(255, 193, 7, 1),
             iconTheme: IconThemeData(
               color: isDark ? Colors.white : Colors.black,
             ),
@@ -253,9 +160,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: isDark 
-                    ? Colors.black.withOpacity(0.3)
-                    : Colors.grey.withOpacity(0.1),
+                  color: isDark
+                      ? Colors.black.withOpacity(0.3)
+                      : Colors.grey.withOpacity(0.1),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -268,7 +175,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // FXSwift başlığı
+                      
                       Text(
                         'FXSwift',
                         style: TextStyle(
@@ -279,7 +186,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const SizedBox(height: 50),
 
-                      // Kullanıcı adı alanı
+                      
                       Container(
                         decoration: BoxDecoration(
                           border: Border.all(
@@ -322,7 +229,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const SizedBox(height: 20),
 
-                      // Şifre alanı
+                      
                       Container(
                         decoration: BoxDecoration(
                           border: Border.all(
@@ -351,7 +258,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             suffixIcon: IconButton(
                               icon: Icon(
-                                _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                _isPasswordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
                                 color: isDark ? Colors.grey[400] : Colors.black54,
                               ),
                               onPressed: () {
@@ -375,69 +284,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           },
                         ),
                       ),
-
-                      // Şifre güç göstergesi
-                      if (_passwordController.text.isNotEmpty) ...[
-                        const SizedBox(height: 12),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Şifre Gücü',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: isDark ? Colors.grey[400] : Colors.grey[600],
-                                    ),
-                                  ),
-                                  if (_passwordStrengthText.isNotEmpty)
-                                    Text(
-                                      _passwordStrengthText,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        color: _passwordStrengthColor,
-                                      ),
-                                    ),
-                                ],
-                              ),
-                              const SizedBox(height: 6),
-                              Container(
-                                height: 6,
-                                decoration: BoxDecoration(
-                                  color: isDark 
-                                    ? const Color(0xFF404040) 
-                                    : Colors.grey[300],
-                                  borderRadius: BorderRadius.circular(3),
-                                ),
-                                child: LinearProgressIndicator(
-                                  value: _passwordStrength,
-                                  backgroundColor: Colors.transparent,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                    _passwordStrengthColor,
-                                  ),
-                                  minHeight: 6,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
                       const SizedBox(height: 30),
 
-                      // Giriş Yap butonu
+                      
                       Container(
                         width: double.infinity,
                         height: 50,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: isDark 
-                              ? [const Color(0xFF6366F1), const Color(0xFF8B5CF6)]
-                              : [const Color.fromRGBO(255, 193, 7, 1), const Color(0xFFF59E0B)],
+                            colors: isDark
+                                ? [const Color(0xFF6366F1), const Color(0xFF8B5CF6)]
+                                : [const Color.fromRGBO(255, 193, 7, 1), const Color(0xFFF59E0B)],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
@@ -448,9 +305,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: isDark 
-                                ? const Color(0xFF6366F1).withOpacity(0.3)
-                                : const Color.fromRGBO(255, 193, 7, 0.3),
+                              color: isDark
+                                  ? const Color(0xFF6366F1).withOpacity(0.3)
+                                  : const Color.fromRGBO(255, 193, 7, 0.3),
                               blurRadius: 8,
                               offset: const Offset(0, 4),
                             ),
@@ -488,7 +345,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const SizedBox(height: 15),
 
-                      // Kayıt Ol butonu
+                      
                       Container(
                         width: double.infinity,
                         height: 50,
@@ -501,7 +358,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ),
                         child: ElevatedButton(
-                          onPressed: _isLoading ? null : _register,
+                          onPressed: _isLoading
+                              ? null
+                              : () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const RegisterScreen(),
+                                    ),
+                                  );
+                                },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: isDark ? const Color(0xFF404040) : Colors.white,
                             foregroundColor: isDark ? Colors.white : Colors.black,
@@ -532,19 +398,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-// Giriş yaptıktan sonra gösterilecek kullanıcı profil ekranı
+
 class UserProfileScreen extends StatelessWidget {
   final String username;
 
   const UserProfileScreen({super.key, required this.username});
 
-  // Çıkış yapma işlemi
   void _logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('isLoggedIn');
     await prefs.remove('saved_username');
 
-    // Giriş ekranına geri dön
+    
     if (context.mounted) {
       Navigator.pushReplacement(
         context,
@@ -569,9 +434,9 @@ class UserProfileScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            backgroundColor: isDark 
-              ? const Color(0xFF2D2D2D) 
-              : const Color.fromRGBO(255, 193, 7, 1),
+            backgroundColor: isDark
+                ? const Color(0xFF2D2D2D)
+                : const Color.fromRGBO(255, 193, 7, 1),
             iconTheme: IconThemeData(
               color: isDark ? Colors.white : Colors.black,
             ),
@@ -582,7 +447,7 @@ class UserProfileScreen extends StatelessWidget {
                   Icons.logout,
                   color: isDark ? Colors.white : Colors.black,
                 ),
-                onPressed: () => _logout(context), // Çıkış yapma işlevini çağır
+                onPressed: () => _logout(context), 
               ),
             ],
           ),
@@ -598,9 +463,9 @@ class UserProfileScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: isDark 
-                    ? Colors.black.withOpacity(0.3)
-                    : Colors.grey.withOpacity(0.1),
+                  color: isDark
+                      ? Colors.black.withOpacity(0.3)
+                      : Colors.grey.withOpacity(0.1),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -615,9 +480,10 @@ class UserProfileScreen extends StatelessWidget {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: (isDark 
-                            ? const Color(0xFF6366F1) 
-                            : const Color.fromRGBO(255, 193, 7, 1)).withOpacity(0.3),
+                          color: (isDark
+                                  ? const Color(0xFF6366F1)
+                                  : const Color.fromRGBO(255, 193, 7, 1))
+                              .withOpacity(0.3),
                           blurRadius: 20,
                           offset: const Offset(0, 8),
                         ),
@@ -625,9 +491,9 @@ class UserProfileScreen extends StatelessWidget {
                     ),
                     child: CircleAvatar(
                       radius: 50,
-                      backgroundColor: isDark 
-                        ? const Color(0xFF6366F1) 
-                        : const Color.fromRGBO(255, 193, 7, 1),
+                      backgroundColor: isDark
+                          ? const Color(0xFF6366F1)
+                          : const Color.fromRGBO(255, 193, 7, 1),
                       child: Icon(
                         Icons.person,
                         size: 60,
@@ -648,14 +514,14 @@ class UserProfileScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
-                      color: isDark 
-                        ? const Color(0xFF6366F1).withOpacity(0.2)
-                        : const Color.fromRGBO(255, 193, 7, 0.2),
+                      color: isDark
+                          ? const Color(0xFF6366F1).withOpacity(0.2)
+                          : const Color.fromRGBO(255, 193, 7, 0.2),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: isDark 
-                          ? const Color(0xFF6366F1).withOpacity(0.3)
-                          : const Color.fromRGBO(255, 193, 7, 0.3),
+                        color: isDark
+                            ? const Color(0xFF6366F1).withOpacity(0.3)
+                            : const Color.fromRGBO(255, 193, 7, 0.3),
                       ),
                     ),
                     child: Text(
@@ -673,18 +539,22 @@ class UserProfileScreen extends StatelessWidget {
                     height: 50,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: isDark 
-                          ? [const Color(0xFF6366F1), const Color(0xFF8B5CF6)]
-                          : [const Color.fromRGBO(255, 193, 7, 1), const Color.fromRGBO(255, 235, 59, 1)],
+                        colors: isDark
+                            ? [const Color(0xFF6366F1), const Color(0xFF8B5CF6)]
+                            : [
+                                const Color.fromRGBO(255, 193, 7, 1),
+                                const Color.fromRGBO(255, 235, 59, 1)
+                              ],
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
                       ),
                       borderRadius: BorderRadius.circular(25),
                       boxShadow: [
                         BoxShadow(
-                          color: (isDark 
-                            ? const Color(0xFF6366F1) 
-                            : const Color.fromRGBO(255, 193, 7, 1)).withOpacity(0.4),
+                          color: (isDark
+                                  ? const Color(0xFF6366F1)
+                                  : const Color.fromRGBO(255, 193, 7, 1))
+                              .withOpacity(0.4),
                           blurRadius: 15,
                           offset: const Offset(0, 6),
                         ),
@@ -692,7 +562,7 @@ class UserProfileScreen extends StatelessWidget {
                     ),
                     child: ElevatedButton(
                       onPressed: () {
-                        // Profil düzenleme sayfasına git
+                        
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('Profil düzenleme özelliği yakında eklenecek'),
@@ -720,27 +590,27 @@ class UserProfileScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Ek bilgi kartı
+                  
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: isDark 
-                        ? const Color(0xFF404040).withOpacity(0.5)
-                        : Colors.grey.shade50,
+                      color: isDark
+                          ? const Color(0xFF404040).withOpacity(0.5)
+                          : Colors.grey.shade50,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: isDark 
-                          ? const Color(0xFF525252)
-                          : Colors.grey.shade200,
+                        color: isDark
+                            ? const Color(0xFF525252)
+                            : Colors.grey.shade200,
                       ),
                     ),
                     child: Row(
                       children: [
                         Icon(
                           Icons.info_outline,
-                          color: isDark 
-                            ? const Color(0xFF60A5FA)
-                            : const Color(0xFF3B82F6),
+                          color: isDark
+                              ? const Color(0xFF60A5FA)
+                              : const Color(0xFF3B82F6),
                           size: 20,
                         ),
                         const SizedBox(width: 12),
@@ -749,9 +619,9 @@ class UserProfileScreen extends StatelessWidget {
                             'Profil düzenleme ve diğer özellikler yakında eklenecek.',
                             style: TextStyle(
                               fontSize: 14,
-                              color: isDark 
-                                ? Colors.grey[300]
-                                : Colors.grey[600],
+                              color: isDark
+                                  ? Colors.grey[300]
+                                  : Colors.grey[600],
                             ),
                           ),
                         ),
