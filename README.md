@@ -34,7 +34,8 @@ Bu proje, Flutter ile uygulama geliştirmeye yeni başlayanlar için hem pratik 
 
 ## Yükleme Ekranı 
 
-<img src="https://github.com/tarikkaravar/FXSwift/blob/main/assets/readmephoto/loading.jpg?raw=true" width="300"/>
+<img src="https://raw.githubusercontent.com/TarikKaravar/FXSwift/main/assets/readmefoto/loading.jpg" width="300"/>
+
 
 
 ## Api Çekme İşlemi
