@@ -38,7 +38,7 @@ Bu proje, Flutter ile uygulama geliştirmeye yeni başlayanlar için hem pratik 
 
 ## Api Çekme İşlemi
 
-<img src="https://github.com/user-attachments/assets/0f494938-3548-47b8-901b-6903fe520112" width="300"/>
+<img src="https://github.com/user-attachments/assets/0f494938-3548-47b8-901b-6903fe520112" width="400"/>
 
 ## Ana Ekran Kur Değerleri 
 
