@@ -34,53 +34,57 @@ Bu proje, Flutter ile uygulama geliştirmeye yeni başlayanlar için hem pratik 
 
 ## Yükleme Ekranı 
 
-<img src="https://github.com/user-attachments/assets/cfe7f545-4f3f-4390-b202-9cca85b9ee59" width="300"/>
+<img src="assets/readmephoto/loading.jpg" width="300"/>
 
 ## Api Çekme İşlemi
 
-<img src="https://github.com/user-attachments/assets/0f494938-3548-47b8-901b-6903fe520112" width="400"/>
+<img src="assets/readmephoto/succes.png" width="400"/>
 
 ## Ana Ekran Kur Değerleri 
 
-<img src="https://github.com/user-attachments/assets/b5bba6ac-e720-414c-adf5-742e07c82821" width="300"/>
-<img src="https://github.com/user-attachments/assets/52d01602-139a-4d49-9575-3660e71e1f4d" width="300"/>
+<img src="assets/readmephoto/kurlarbeyaz.jpg" width="300"/>
+<img src="assets/readmephoto/kurlarsiyah.jpg" width="300"/>
 
 ## Kur Çevirme Ekranı 
 
-<img src="https://github.com/user-attachments/assets/16a8445e-3d30-4e98-90fd-49e0cbd63779" width="300"/>
-<img src="https://github.com/user-attachments/assets/789a15ca-4295-4998-a370-2af89499b41e" width="300"/>
+<img src="assets/readmephoto/ceviribeyaz.jpg" width="300"/>
+<img src="assets/readmephoto/cevirisiyah.jpg" width="300"/>
 
 ## Haberler Ekranı 
 
-<img src="https://github.com/user-attachments/assets/11279e98-886c-4749-989e-6145aafaeff4" width="300"/>
-<img src="https://github.com/user-attachments/assets/e36cb69d-3638-41bf-aae6-4bb2384de3e0" width="300"/>
+<img src="assets/readmephoto/haberbeyaz.jpg" width="300"/>
+<img src="assets/readmephoto/habersiyah.jpg" width="300"/>
 
 ## Ayarlar Ekranı 
 
-<img src="https://github.com/user-attachments/assets/4b629599-c0ee-432b-8370-0b7a0f579ded" width="300"/>
-<img src="https://github.com/user-attachments/assets/1a57a720-0229-45ac-97b7-5c7367e30ecb" width="300"/>
+<img src="assets/readmephoto/ayarbeyaz.jpg" width="300"/>
+<img src="assets/readmephoto/ayarsiyah.jpg" width="300"/>
 
 ## Dil Değiştirme Ekranı 
 
-<img src="https://github.com/user-attachments/assets/e4a1fe83-71f1-4459-b19a-e6bed3c5c792" width="300"/>
-<img src="https://github.com/user-attachments/assets/310894a8-498a-4965-a8ba-21ec29a33c5c" width="300"/>
+<img src="assets/readmephoto/dilbeyaz.jpg" width="300"/>
+<img src="assets/readmephoto/dilsiyah.jpg" width="300"/>
 
 ## Uygulama Teması Ekranı 
 
-<img src="https://github.com/user-attachments/assets/e0547709-46ba-4fe7-b1d4-4f0ba228eb23" width="300"/>
-<img src="https://github.com/user-attachments/assets/6e6322e9-fe83-4de8-8bf5-b41a49a92208" width="300"/>
+<img src="assets/readmephoto/modbeyaz.jpg" width="300"/>
+<img src="assets/readmephoto/modsiyah.jpg" width="300"/>
 
 ## Giriş Yapma Ekranı
 
-<img src="https://github.com/user-attachments/assets/aa908655-e22a-479c-acc0-e181ca6f8a9a" width="300"/>
-<img src="https://github.com/user-attachments/assets/a2fb3cd5-dd5e-49be-b9a7-024cb77eb23e" width="300"/>
+<img src="assets/readmephoto/girisbeyaz.jpg" width="300"/>
+<img src="assets/readmephoto/girissiyah.jpg" width="300"/>
 
 ## Kayıt Olma Ekranı 
 
-<img src="https://github.com/user-attachments/assets/d552f29c-4b55-4b35-855d-341c3f542196" width="300"/>
-<img src="https://github.com/user-attachments/assets/cf754022-8748-4330-83ed-5101153c84e0" width="300"/>
+<img src="assets/readmephoto/kayıtbeyaz.png" width="300"/>
+<img src="assets/readmephoto/kayıtsiyah.png" width="300"/>
 
 ## Profil Ekranı 
 
-<img src="https://github.com/user-attachments/assets/fa621fee-3748-4c0d-a684-6af19d05bf33" width="300"/>
-<img src="https://github.com/user-attachments/assets/28ad70ee-07e8-45c2-960f-62ddfc9af910" width="300"/>
+<img src="assets/readmephoto/profilbeyaz.png" width="300"/>
+<img src="assets/readmephoto/profilsiyah.png" width="300"/>
+
+## Google ile Giriş Ekranı 
+
+<img src="assets/readmephoto/google.jpg" width="300"/>
