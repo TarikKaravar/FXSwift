@@ -41,9 +41,12 @@ Bu proje, Flutter ile uygulama geliştirmeye yeni başlayanlar için hem pratik 
 
 ## Ana Ekran Kur Değerleri 
 
-![Image](https://github.com/user-attachments/assets/b5bba6ac-e720-414c-adf5-742e07c82821)
+<img src="https://github.com/user-attachments/assets/b5bba6ac-e720-414c-adf5-742e07c82821" alt="Image 1" width="400"/>
 
-![Image](https://github.com/user-attachments/assets/52d01602-139a-4d49-9575-3660e71e1f4d)
+<br/>
+
+<img src="https://github.com/user-attachments/assets/52d01602-139a-4d49-9575-3660e71e1f4d" alt="Image 2" width="400"/>
+
 
 ## Kur Çevirme Ekranı 
 
