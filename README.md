@@ -46,8 +46,8 @@ Bu proje, Flutter ile uygulama geliştirmeye yeni başlayanlar için hem pratik 
 
 ## Ana Ekran Kur Değerleri 
 
-<img src="https://raw.githubusercontent.com/TarikKaravar/FXSwift/main/assets/readmefoto/kurlarbeyaz.jpg" width="300"/>
-<img src="https://raw.githubusercontent.com/TarikKaravar/FXSwift/main/assets/readmefoto/kurlarsiyah.jpg" width="300"/>
+<img src="https://raw.githubusercontent.com/TarikKaravar/FXSwift/main/assets/readmefoto/kurlarbeyaz.jpg" width="300"/> <img src="https://raw.githubusercontent.com/TarikKaravar/FXSwift/main/assets/readmefoto/kurlarsiyah.jpg" width="300"/>
+
 
 
 
