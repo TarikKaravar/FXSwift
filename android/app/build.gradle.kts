@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.flutter_app"
+    namespace = "com.tarik.money"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -23,7 +23,7 @@ android {
     }
 
     defaultConfig {
-    applicationId = "com.example.flutter_app"
+    applicationId = "com.tarik.money"
     minSdk = 21  // Google Sign-In için minimum SDK 21 olmalı
     targetSdk = flutter.targetSdkVersion
     versionCode = flutter.versionCode
